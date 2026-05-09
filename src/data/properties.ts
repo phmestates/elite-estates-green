@@ -1,0 +1,188 @@
+export type Property = {
+  id: string;
+  title: string;
+  address: string;
+  suburb: string;
+  price: number;
+  priceLabel: string;
+  beds: number;
+  baths: number;
+  cars: number;
+  type: "House" | "Unit" | "Townhouse" | "Villa" | "Duplex";
+  status: "For Sale" | "For Rent" | "Sold" | "Leased";
+  features: { airCon: boolean; pool: boolean; security: boolean };
+  image: string;
+};
+
+const img = (id: string) =>
+  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1200&q=70`;
+
+export const SUBURBS = [
+  "Maple Heights",
+  "Cedar Grove",
+  "Willow Park",
+  "Oakridge",
+  "Pinehurst",
+  "Birchwood",
+  "Elmfield",
+  "Ashvale",
+];
+
+export const properties: Property[] = [
+  {
+    id: "p1",
+    title: "Modern Family Sanctuary",
+    address: "12 Linden Ave",
+    suburb: "Maple Heights",
+    price: 875000,
+    priceLabel: "$875,000",
+    beds: 4, baths: 2, cars: 2,
+    type: "House",
+    status: "For Sale",
+    features: { airCon: true, pool: true, security: true },
+    image: img("photo-1568605114967-8130f3a36994"),
+  },
+  {
+    id: "p2",
+    title: "Light-Filled Contemporary Townhouse",
+    address: "8/45 Cedar Lane",
+    suburb: "Cedar Grove",
+    price: 645000,
+    priceLabel: "$645,000",
+    beds: 3, baths: 2, cars: 1,
+    type: "Townhouse",
+    status: "For Sale",
+    features: { airCon: true, pool: false, security: true },
+    image: img("photo-1600596542815-ffad4c1539a9"),
+  },
+  {
+    id: "p3",
+    title: "Elegant Riverside Villa",
+    address: "27 Willow Crescent",
+    suburb: "Willow Park",
+    price: 1250000,
+    priceLabel: "$1,250,000",
+    beds: 5, baths: 3, cars: 2,
+    type: "Villa",
+    status: "For Sale",
+    features: { airCon: true, pool: true, security: true },
+    image: img("photo-1613490493576-7fde63acd811"),
+  },
+  {
+    id: "p4",
+    title: "Stylish City Unit",
+    address: "302/15 Oak St",
+    suburb: "Oakridge",
+    price: 495000,
+    priceLabel: "$495,000",
+    beds: 2, baths: 1, cars: 1,
+    type: "Unit",
+    status: "For Sale",
+    features: { airCon: true, pool: false, security: true },
+    image: img("photo-1502672260266-1c1ef2d93688"),
+  },
+  {
+    id: "p5",
+    title: "Pinehurst Family Home",
+    address: "54 Pine Ridge Rd",
+    suburb: "Pinehurst",
+    price: 720,
+    priceLabel: "$720 / week",
+    beds: 4, baths: 2, cars: 2,
+    type: "House",
+    status: "For Rent",
+    features: { airCon: true, pool: false, security: false },
+    image: img("photo-1564013799919-ab600027ffc6"),
+  },
+  {
+    id: "p6",
+    title: "Designer Birchwood Duplex",
+    address: "1A Birch St",
+    suburb: "Birchwood",
+    price: 980000,
+    priceLabel: "$980,000",
+    beds: 4, baths: 3, cars: 2,
+    type: "Duplex",
+    status: "For Sale",
+    features: { airCon: true, pool: false, security: true },
+    image: img("photo-1600585154340-be6161a56a0c"),
+  },
+  {
+    id: "p7",
+    title: "Charming Elmfield Cottage",
+    address: "6 Elm Park Rd",
+    suburb: "Elmfield",
+    price: 575000,
+    priceLabel: "$575,000",
+    beds: 3, baths: 1, cars: 1,
+    type: "House",
+    status: "Sold",
+    features: { airCon: false, pool: false, security: false },
+    image: img("photo-1580587771525-78b9dba3b914"),
+  },
+  {
+    id: "p8",
+    title: "Luxury Ashvale Estate",
+    address: "100 Ashvale Drive",
+    suburb: "Ashvale",
+    price: 2150000,
+    priceLabel: "$2,150,000",
+    beds: 6, baths: 4, cars: 4,
+    type: "House",
+    status: "For Sale",
+    features: { airCon: true, pool: true, security: true },
+    image: img("photo-1600047509807-ba8f99d2cdde"),
+  },
+  {
+    id: "p9",
+    title: "Sleek Inner-City Apartment",
+    address: "1204/9 Maple Way",
+    suburb: "Maple Heights",
+    price: 540,
+    priceLabel: "$540 / week",
+    beds: 2, baths: 2, cars: 1,
+    type: "Unit",
+    status: "For Rent",
+    features: { airCon: true, pool: true, security: true },
+    image: img("photo-1522708323590-d24dbb6b0267"),
+  },
+  {
+    id: "p10",
+    title: "Coastal-Style Townhouse",
+    address: "12 Cedar Mews",
+    suburb: "Cedar Grove",
+    price: 690000,
+    priceLabel: "$690,000",
+    beds: 3, baths: 2, cars: 2,
+    type: "Townhouse",
+    status: "For Sale",
+    features: { airCon: true, pool: false, security: true },
+    image: img("photo-1505691938895-1758d7feb511"),
+  },
+  {
+    id: "p11",
+    title: "Renovated Willow Park Villa",
+    address: "44 Willow Way",
+    suburb: "Willow Park",
+    price: 1095000,
+    priceLabel: "$1,095,000",
+    beds: 4, baths: 3, cars: 2,
+    type: "Villa",
+    status: "Leased",
+    features: { airCon: true, pool: true, security: true },
+    image: img("photo-1512917774080-9991f1c4c750"),
+  },
+  {
+    id: "p12",
+    title: "Premium Oakridge Residence",
+    address: "21 Oakridge Blvd",
+    suburb: "Oakridge",
+    price: 1450000,
+    priceLabel: "$1,450,000",
+    beds: 5, baths: 3, cars: 3,
+    type: "House",
+    status: "For Sale",
+    features: { airCon: true, pool: true, security: true },
+    image: img("photo-1600566753190-17f0baa2a6c3"),
+  },
+];
