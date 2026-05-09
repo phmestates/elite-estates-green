@@ -9,8 +9,50 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SellingRouteImport } from './routes/selling'
+import { Route as RentingRouteImport } from './routes/renting'
+import { Route as PropertyRouteImport } from './routes/property'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as BuyingRouteImport } from './routes/buying'
+import { Route as BlogRouteImport } from './routes/blog'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SellingRoute = SellingRouteImport.update({
+  id: '/selling',
+  path: '/selling',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RentingRoute = RentingRouteImport.update({
+  id: '/renting',
+  path: '/renting',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PropertyRoute = PropertyRouteImport.update({
+  id: '/property',
+  path: '/property',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuyingRoute = BuyingRouteImport.update({
+  id: '/buying',
+  path: '/buying',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +61,130 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/blog': typeof BlogRoute
+  '/buying': typeof BuyingRoute
+  '/contact': typeof ContactRoute
+  '/property': typeof PropertyRoute
+  '/renting': typeof RentingRoute
+  '/selling': typeof SellingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/blog': typeof BlogRoute
+  '/buying': typeof BuyingRoute
+  '/contact': typeof ContactRoute
+  '/property': typeof PropertyRoute
+  '/renting': typeof RentingRoute
+  '/selling': typeof SellingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/blog': typeof BlogRoute
+  '/buying': typeof BuyingRoute
+  '/contact': typeof ContactRoute
+  '/property': typeof PropertyRoute
+  '/renting': typeof RentingRoute
+  '/selling': typeof SellingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/blog'
+    | '/buying'
+    | '/contact'
+    | '/property'
+    | '/renting'
+    | '/selling'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/blog'
+    | '/buying'
+    | '/contact'
+    | '/property'
+    | '/renting'
+    | '/selling'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/blog'
+    | '/buying'
+    | '/contact'
+    | '/property'
+    | '/renting'
+    | '/selling'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  BlogRoute: typeof BlogRoute
+  BuyingRoute: typeof BuyingRoute
+  ContactRoute: typeof ContactRoute
+  PropertyRoute: typeof PropertyRoute
+  RentingRoute: typeof RentingRoute
+  SellingRoute: typeof SellingRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/selling': {
+      id: '/selling'
+      path: '/selling'
+      fullPath: '/selling'
+      preLoaderRoute: typeof SellingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/renting': {
+      id: '/renting'
+      path: '/renting'
+      fullPath: '/renting'
+      preLoaderRoute: typeof RentingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/property': {
+      id: '/property'
+      path: '/property'
+      fullPath: '/property'
+      preLoaderRoute: typeof PropertyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buying': {
+      id: '/buying'
+      path: '/buying'
+      fullPath: '/buying'
+      preLoaderRoute: typeof BuyingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,7 +197,24 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  BlogRoute: BlogRoute,
+  BuyingRoute: BuyingRoute,
+  ContactRoute: ContactRoute,
+  PropertyRoute: PropertyRoute,
+  RentingRoute: RentingRoute,
+  SellingRoute: SellingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
