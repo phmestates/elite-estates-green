@@ -115,9 +115,14 @@
 
 @layer utilities {
   .bg-gradient-hero { background: var(--gradient-hero); }
+  .bg-gradient-hero-vignette { background: var(--gradient-hero-vignette); }
   .bg-gradient-gold { background: var(--gradient-gold); }
   .bg-gradient-emerald { background: var(--gradient-emerald); }
   .shadow-elegant { box-shadow: var(--shadow-elegant); }
   .shadow-gold { box-shadow: var(--shadow-gold); }
   .text-balance { text-wrap: balance; }
+  .grain {
+    background-image: radial-gradient(oklch(1 0 0 / 0.04) 1px, transparent 1px);
+    background-size: 3px 3px;
+  }
 }
