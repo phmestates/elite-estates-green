@@ -24,47 +24,95 @@ function HomePage() {
   return (
     <>
       {/* HERO */}
-      <section className="relative">
+      <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=70"
-            alt="Premium living room"
-            className="w-full h-full object-cover"
+            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=80"
+            alt="Premium architectural home"
+            className="w-full h-full object-cover scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/90 via-primary-dark/75 to-primary/30" />
+          <div className="absolute inset-0 bg-gradient-hero" />
+          <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-gold/20 blur-3xl" />
+          <div className="absolute bottom-0 left-1/4 w-[28rem] h-[28rem] rounded-full bg-primary-glow/20 blur-3xl" />
         </div>
-        <div className="relative container mx-auto px-4 py-20 md:py-32 text-white">
-          <p className="text-gold uppercase tracking-[0.3em] text-xs font-semibold mb-4">PHM Elite Estates</p>
-          <h1 className="font-display text-4xl md:text-6xl font-bold leading-tight max-w-3xl">
-            The leading real estate experts <span className="text-gold">dedicated to results</span>
-          </h1>
-          <p className="mt-4 text-lg text-white/85 max-w-xl">The local specialists you can rely on and trust — from first home buyers to luxury estates.</p>
 
-          <div className="mt-8 max-w-2xl bg-white/95 rounded-lg p-2 flex flex-col sm:flex-row gap-2 shadow-2xl">
-            <input
-              type="text"
-              placeholder="Property address or suburb"
-              className="flex-1 h-12 px-4 text-foreground rounded-md focus:outline-none"
-            />
-            <Link to="/selling" className="inline-flex items-center justify-center gap-2 bg-gold text-gold-foreground font-bold uppercase tracking-wider px-5 h-12 rounded-md hover:brightness-95 transition">
-              What's My Home Worth?
-            </Link>
+        <div className="relative container mx-auto px-4 lg:px-8 pt-20 pb-28 md:pt-28 md:pb-36 text-white">
+          <div className="grid lg:grid-cols-12 gap-10 items-end">
+            <div className="lg:col-span-8">
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur border border-white/20 pl-1.5 pr-4 py-1.5 text-xs font-medium tracking-wide">
+                <span className="grid place-items-center w-6 h-6 rounded-full bg-gradient-gold text-gold-foreground">
+                  <Sparkles size={12} />
+                </span>
+                Award-winning boutique agency
+              </span>
+
+              <h1 className="mt-6 font-display font-light text-5xl md:text-7xl leading-[1.02] tracking-tight text-balance">
+                Where every <span className="italic font-normal text-gold">address</span>
+                <br className="hidden md:block" /> tells a refined story.
+              </h1>
+
+              <p className="mt-6 text-lg text-white/80 max-w-xl leading-relaxed">
+                PHM Elite Estates curates Australia's most considered homes — pairing local
+                insight with concierge-grade service from first viewing to final settlement.
+              </p>
+
+              <div className="mt-10 max-w-2xl">
+                <div className="bg-white/95 backdrop-blur rounded-2xl p-2 flex flex-col sm:flex-row gap-2 shadow-elegant">
+                  <div className="flex items-center gap-2 flex-1 px-4">
+                    <MapPin size={18} className="text-primary" />
+                    <input
+                      type="text"
+                      placeholder="Suburb, postcode or street"
+                      className="flex-1 h-12 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-sm"
+                    />
+                  </div>
+                  <Link
+                    to="/selling"
+                    className="inline-flex items-center justify-center gap-2 bg-gradient-emerald text-primary-foreground font-medium px-6 h-12 rounded-xl hover:opacity-95 transition shadow-gold"
+                  >
+                    Get a free appraisal
+                    <ArrowRight size={16} />
+                  </Link>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2 text-xs text-white/70">
+                  <span>Popular:</span>
+                  {["Mosman", "Paddington", "Surry Hills", "Bondi"].map((s) => (
+                    <Link key={s} to="/property" className="hover:text-gold transition">{s}</Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-1 gap-3">
+              {[
+                { k: "$1.2B+", v: "Property sold" },
+                { k: "485", v: "Five-star reviews" },
+                { k: "21 days", v: "Avg. days on market" },
+              ].map((s) => (
+                <div key={s.v} className="rounded-2xl bg-white/8 backdrop-blur-md border border-white/15 p-5">
+                  <div className="font-display text-3xl text-gold">{s.k}</div>
+                  <div className="text-xs text-white/70 mt-1 uppercase tracking-wider">{s.v}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Award strip */}
-        <div className="relative bg-ink/90 backdrop-blur text-white py-5">
-          <div className="container mx-auto px-4 flex flex-wrap items-center justify-center gap-4 md:gap-8 text-center">
+        <div className="relative bg-primary-dark text-white">
+          <div className="container mx-auto px-4 lg:px-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 py-5 text-center text-sm">
             <div className="flex items-center gap-2">
-              <Award className="text-gold" size={22} />
-              <span className="font-display font-semibold">Award Winning Agency &amp; Agent 2017–2026</span>
+              <Award className="text-gold" size={18} />
+              <span>Award-winning agency &amp; agent · 2017–2026</span>
             </div>
-            <div className="flex items-center gap-1">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} size={18} className="fill-gold text-gold" />
-              ))}
+            <span className="hidden md:inline w-px h-4 bg-white/20" />
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-0.5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} size={14} className="fill-gold text-gold" />
+                ))}
+              </div>
+              <span className="text-white/80"><strong className="text-white">4.9</strong> from 485 client reviews</span>
             </div>
-            <div className="text-sm text-white/80"><strong className="text-white">4.9 / 5</strong> · Based on 485 reviews</div>
           </div>
         </div>
       </section>
