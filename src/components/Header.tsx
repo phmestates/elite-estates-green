@@ -1,87 +1,102 @@
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { Menu, X, Mail, Phone, Facebook, Instagram, Linkedin, Home } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Menu, X, Phone, ChevronRight } from "lucide-react";
 import { site, navItems } from "@/data/site";
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50">
-      {/* Top utility bar */}
-      <div className="bg-ink text-white text-xs">
-        <div className="container mx-auto px-4 flex items-center justify-between h-9">
-          <div className="flex items-center gap-3">
-            <a href={site.socials.facebook} aria-label="Facebook" className="hover:text-gold transition-colors"><Facebook size={14} /></a>
-            <a href={site.socials.instagram} aria-label="Instagram" className="hover:text-gold transition-colors"><Instagram size={14} /></a>
-            <a href={site.socials.linkedin} aria-label="LinkedIn" className="hover:text-gold transition-colors"><Linkedin size={14} /></a>
-          </div>
-          <div className="flex items-center gap-2 sm:gap-4">
-            <a href={`mailto:${site.email}`} className="hidden sm:inline-flex items-center gap-1.5 hover:text-gold transition-colors">
-              <Mail size={13} /> EMAIL US
-            </a>
-            <a href={site.phoneHref} className="inline-flex items-center gap-1.5 bg-gold text-gold-foreground font-semibold px-3 h-9 hover:brightness-95 transition">
-              <Phone size={13} /> CALL US ON {site.phone}
-            </a>
-          </div>
+    <header
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-background/85 backdrop-blur-xl border-b border-border/60 shadow-sm"
+          : "bg-background/60 backdrop-blur-md border-b border-transparent"
+      }`}
+    >
+      <div className="container mx-auto px-4 lg:px-8 flex items-center justify-between h-20">
+        {/* Brand */}
+        <Link to="/" className="flex items-center gap-3 group">
+          <span className="relative grid place-items-center w-11 h-11 rounded-full bg-gradient-emerald text-primary-foreground shadow-elegant">
+            <span className="font-display font-semibold text-lg leading-none tracking-tight">P</span>
+            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-gradient-gold ring-2 ring-background" />
+          </span>
+          <span className="leading-none">
+            <span className="block font-display text-[1.35rem] font-semibold tracking-tight text-primary-dark">
+              PHM <span className="italic font-light text-primary">Elite</span>
+            </span>
+            <span className="mt-1 block text-[10px] uppercase tracking-[0.32em] text-muted-foreground">
+              Estates · Est. 2017
+            </span>
+          </span>
+        </Link>
+
+        {/* Desktop Nav */}
+        <nav className="hidden lg:flex items-center gap-1">
+          {navItems.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              activeOptions={{ exact: item.to === "/" }}
+              activeProps={{ className: "text-primary-dark after:scale-x-100" }}
+              className="relative px-3.5 py-2 text-[13px] font-medium text-foreground/75 hover:text-primary-dark transition-colors after:absolute after:left-3.5 after:right-3.5 after:-bottom-0.5 after:h-px after:bg-gradient-gold after:scale-x-0 after:origin-left after:transition-transform hover:after:scale-x-100"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-2">
+          <a
+            href={site.phoneHref}
+            className="hidden md:inline-flex items-center gap-2 h-11 pl-4 pr-2 rounded-full bg-primary-dark text-primary-foreground text-sm font-medium hover:bg-primary transition group"
+          >
+            <Phone size={14} className="text-gold" />
+            <span className="opacity-90">{site.phone}</span>
+            <span className="grid place-items-center w-7 h-7 rounded-full bg-gradient-gold text-gold-foreground group-hover:rotate-45 transition-transform">
+              <ChevronRight size={14} />
+            </span>
+          </a>
+
+          <button
+            className="lg:hidden p-2.5 rounded-md hover:bg-secondary transition"
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
       </div>
 
-      {/* Main bar */}
-      <div className="bg-primary text-primary-foreground shadow-md">
-        <div className="container mx-auto px-4 flex items-center justify-between h-20">
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <span className="grid place-items-center w-10 h-10 rounded-md bg-gold text-gold-foreground">
-              <Home size={20} strokeWidth={2.5} />
-            </span>
-            <span className="font-display leading-tight">
-              <span className="block text-lg font-bold tracking-wide">PHM ELITE</span>
-              <span className="block text-[10px] uppercase tracking-[0.25em] text-gold">Estates</span>
-            </span>
-          </Link>
-
-          <nav className="hidden lg:flex items-center gap-1">
+      {open && (
+        <nav className="lg:hidden bg-background/95 backdrop-blur-xl border-t border-border">
+          <div className="container mx-auto px-4 py-3 flex flex-col">
             {navItems.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
+                onClick={() => setOpen(false)}
                 activeOptions={{ exact: item.to === "/" }}
-                activeProps={{ className: "text-gold" }}
-                className="px-3 py-2 text-sm font-semibold uppercase tracking-wider hover:text-gold transition-colors"
+                activeProps={{ className: "text-primary-dark" }}
+                className="py-3 text-sm font-medium text-foreground/80 border-b border-border/60 last:border-0"
               >
                 {item.label}
               </Link>
             ))}
-          </nav>
-
-          <button
-            className="lg:hidden p-2"
-            onClick={() => setOpen((v) => !v)}
-            aria-label="Toggle menu"
-          >
-            {open ? <X /> : <Menu />}
-          </button>
-        </div>
-
-        {open && (
-          <nav className="lg:hidden bg-primary-dark border-t border-white/10">
-            <div className="container mx-auto px-4 py-2 flex flex-col">
-              {navItems.map((item) => (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  onClick={() => setOpen(false)}
-                  activeOptions={{ exact: item.to === "/" }}
-                  activeProps={{ className: "text-gold" }}
-                  className="py-3 text-sm font-semibold uppercase tracking-wider border-b border-white/10 last:border-0"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </div>
-          </nav>
-        )}
-      </div>
+            <a href={site.phoneHref} className="mt-3 mb-2 inline-flex items-center justify-center gap-2 h-11 rounded-full bg-primary-dark text-primary-foreground text-sm font-medium">
+              <Phone size={14} className="text-gold" /> {site.phone}
+            </a>
+          </div>
+        </nav>
+      )}
     </header>
   );
 }
