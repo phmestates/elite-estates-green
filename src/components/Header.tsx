@@ -25,16 +25,22 @@ export function Header() {
       <div className="container mx-auto px-4 lg:px-8 flex items-center justify-between h-20">
         {/* Brand */}
         <Link to="/" className="flex items-center gap-3 group">
-          <span className="relative grid place-items-center w-11 h-11 rounded-full bg-gradient-emerald text-primary-foreground shadow-elegant">
-            <span className="font-display font-semibold text-lg leading-none tracking-tight">P</span>
-            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-gradient-gold ring-2 ring-background" />
+          <span className="relative grid place-items-center w-12 h-12 rounded-2xl bg-gradient-emerald shadow-elegant overflow-hidden rotate-[-6deg] group-hover:rotate-0 transition-transform duration-500">
+            {/* Abstract monogram: house silhouette + gold accent */}
+            <svg viewBox="0 0 32 32" className="w-7 h-7 text-primary-foreground" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 15 L16 5 L27 15 V26 H5 Z" />
+              <path d="M13 26 V18 H19 V26" className="text-gold" stroke="currentColor" />
+            </svg>
+            <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
           </span>
           <span className="leading-none">
-            <span className="block font-display text-[1.3rem] font-bold tracking-tight text-primary-dark">
-              PHM Elite<span className="text-gold">.</span>
+            <span className="flex items-baseline gap-1">
+              <span className="font-display text-[1.35rem] font-extrabold tracking-tight text-primary-dark">PHM</span>
+              <span className="font-display text-[1.35rem] font-light tracking-tight text-foreground/80">Elite</span>
             </span>
-            <span className="mt-1 block text-[10px] uppercase tracking-[0.32em] text-muted-foreground">
-              Estates · Est. 2017
+            <span className="mt-1.5 flex items-center gap-1.5 text-[10px] uppercase tracking-[0.32em] text-muted-foreground">
+              <span className="w-4 h-px bg-gradient-gold" />
+              Estates
             </span>
           </span>
         </Link>

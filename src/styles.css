@@ -84,7 +84,8 @@
   --ink: oklch(0.13 0.015 160);
 
   /* Reusable design tokens */
-  --gradient-hero: linear-gradient(135deg, oklch(0.18 0.04 160 / 0.92) 0%, oklch(0.30 0.09 158 / 0.78) 55%, oklch(0.42 0.13 158 / 0.55) 100%);
+  --gradient-hero: linear-gradient(120deg, oklch(0.16 0.035 160 / 0.85) 0%, oklch(0.20 0.05 162 / 0.55) 45%, oklch(0.18 0.04 160 / 0.15) 100%);
+  --gradient-hero-vignette: radial-gradient(ellipse at 30% 70%, oklch(0.14 0.03 160 / 0.6) 0%, transparent 60%);
   --gradient-gold: linear-gradient(135deg, oklch(0.86 0.13 92), oklch(0.74 0.14 78));
   --gradient-emerald: linear-gradient(135deg, oklch(0.32 0.10 160), oklch(0.48 0.14 152));
   --shadow-elegant: 0 20px 60px -25px oklch(0.22 0.08 160 / 0.35);
@@ -114,9 +115,14 @@
 
 @layer utilities {
   .bg-gradient-hero { background: var(--gradient-hero); }
+  .bg-gradient-hero-vignette { background: var(--gradient-hero-vignette); }
   .bg-gradient-gold { background: var(--gradient-gold); }
   .bg-gradient-emerald { background: var(--gradient-emerald); }
   .shadow-elegant { box-shadow: var(--shadow-elegant); }
   .shadow-gold { box-shadow: var(--shadow-gold); }
   .text-balance { text-wrap: balance; }
+  .grain {
+    background-image: radial-gradient(oklch(1 0 0 / 0.04) 1px, transparent 1px);
+    background-size: 3px 3px;
+  }
 }
