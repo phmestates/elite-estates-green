@@ -46,9 +46,8 @@ function HomePage() {
                 Award-winning boutique agency
               </span>
 
-              <h1 className="mt-6 font-display font-light text-5xl md:text-7xl leading-[1.02] tracking-tight text-balance">
-                Where every <span className="italic font-normal text-gold">address</span>
-                <br className="hidden md:block" /> tells a refined story.
+              <h1 className="mt-6 font-display font-bold text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight text-balance">
+                Find a home that<br className="hidden md:block" /> feels <span className="text-gold">unmistakably yours.</span>
               </h1>
 
               <p className="mt-6 text-lg text-white/80 max-w-xl leading-relaxed">

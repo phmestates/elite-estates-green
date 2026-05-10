@@ -30,8 +30,8 @@ export function Header() {
             <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-gradient-gold ring-2 ring-background" />
           </span>
           <span className="leading-none">
-            <span className="block font-display text-[1.35rem] font-semibold tracking-tight text-primary-dark">
-              PHM <span className="italic font-light text-primary">Elite</span>
+            <span className="block font-display text-[1.3rem] font-bold tracking-tight text-primary-dark">
+              PHM Elite<span className="text-gold">.</span>
             </span>
             <span className="mt-1 block text-[10px] uppercase tracking-[0.32em] text-muted-foreground">
               Estates · Est. 2017
