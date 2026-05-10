@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Star, Search, ClipboardEdit, Mail, Award, ShieldCheck, Users, TrendingUp, Quote } from "lucide-react";
+import { Star, Search, ClipboardEdit, Mail, Award, ShieldCheck, Users, TrendingUp, Quote, MapPin, ArrowRight, Sparkles } from "lucide-react";
 import { PropertySearch } from "@/components/PropertySearch";
 import { PropertyCard } from "@/components/PropertyCard";
 import { CtaBand } from "@/components/CtaBand";
