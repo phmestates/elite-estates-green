@@ -24,39 +24,55 @@ function HomePage() {
   return (
     <>
       {/* HERO */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden bg-primary-dark">
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=80"
             alt="Premium architectural home"
-            className="w-full h-full object-cover scale-105"
+            className="w-full h-full object-cover scale-105 opacity-90"
           />
           <div className="absolute inset-0 bg-gradient-hero" />
-          <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-gold/20 blur-3xl" />
-          <div className="absolute bottom-0 left-1/4 w-[28rem] h-[28rem] rounded-full bg-primary-glow/20 blur-3xl" />
+          <div className="absolute inset-0 bg-gradient-hero-vignette" />
+          <div className="absolute inset-0 grain opacity-60 mix-blend-overlay" />
+          {/* Decorative ambient glows */}
+          <div className="absolute -top-32 -right-24 w-[28rem] h-[28rem] rounded-full bg-gold/15 blur-[120px]" />
+          <div className="absolute bottom-[-10rem] left-[10%] w-[34rem] h-[34rem] rounded-full bg-primary-glow/10 blur-[140px]" />
+          {/* Subtle grid lines */}
+          <div
+            className="absolute inset-0 opacity-[0.07]"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+              backgroundSize: "80px 80px",
+            }}
+          />
         </div>
 
-        <div className="relative container mx-auto px-4 lg:px-8 pt-20 pb-28 md:pt-28 md:pb-36 text-white">
-          <div className="grid lg:grid-cols-12 gap-10 items-end">
+        <div className="relative container mx-auto px-4 lg:px-8 pt-24 pb-32 md:pt-32 md:pb-40 text-white">
+          <div className="grid lg:grid-cols-12 gap-12 items-end">
             <div className="lg:col-span-8">
-              <span className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur border border-white/20 pl-1.5 pr-4 py-1.5 text-xs font-medium tracking-wide">
-                <span className="grid place-items-center w-6 h-6 rounded-full bg-gradient-gold text-gold-foreground">
-                  <Sparkles size={12} />
-                </span>
-                Award-winning boutique agency
+              {/* Tag chip */}
+              <span className="inline-flex items-center gap-2.5 text-[11px] font-medium tracking-[0.3em] uppercase text-gold/90">
+                <span className="w-8 h-px bg-gold/70" />
+                Sydney · Boutique Real Estate
               </span>
 
-              <h1 className="mt-6 font-display font-bold text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight text-balance">
-                Find a home that<br className="hidden md:block" /> feels <span className="text-gold">unmistakably yours.</span>
+              <h1 className="mt-8 font-display font-extrabold text-5xl md:text-6xl lg:text-[5.25rem] leading-[1.02] tracking-[-0.03em] text-balance">
+                Find a home that<br className="hidden md:block" /> feels{" "}
+                <span className="relative inline-block">
+                  <span className="relative z-10 italic font-light text-gold">unmistakably</span>
+                  <span className="absolute bottom-1 left-0 right-0 h-3 bg-gold/20 -z-0" />
+                </span>{" "}
+                yours.
               </h1>
 
-              <p className="mt-6 text-lg text-white/80 max-w-xl leading-relaxed">
-                PHM Elite Estates curates Australia's most considered homes — pairing local
-                insight with concierge-grade service from first viewing to final settlement.
+              <p className="mt-7 text-lg md:text-xl text-white/75 max-w-xl leading-relaxed font-light">
+                We curate Australia's most considered homes — pairing local insight with
+                concierge-grade service from first viewing to final settlement.
               </p>
 
               <div className="mt-10 max-w-2xl">
-                <div className="bg-white/95 backdrop-blur rounded-2xl p-2 flex flex-col sm:flex-row gap-2 shadow-elegant">
+                <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-2 flex flex-col sm:flex-row gap-2 shadow-elegant ring-1 ring-white/10">
                   <div className="flex items-center gap-2 flex-1 px-4">
                     <MapPin size={18} className="text-primary" />
                     <input
@@ -67,16 +83,22 @@ function HomePage() {
                   </div>
                   <Link
                     to="/selling"
-                    className="inline-flex items-center justify-center gap-2 bg-gradient-emerald text-primary-foreground font-medium px-6 h-12 rounded-xl hover:opacity-95 transition shadow-gold"
+                    className="inline-flex items-center justify-center gap-2 bg-gradient-emerald text-primary-foreground font-medium px-6 h-12 rounded-xl hover:opacity-95 transition shadow-gold group"
                   >
                     Get a free appraisal
-                    <ArrowRight size={16} />
+                    <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
                   </Link>
                 </div>
-                <div className="mt-3 flex flex-wrap gap-2 text-xs text-white/70">
-                  <span>Popular:</span>
+                <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-white/60">
+                  <span className="uppercase tracking-wider">Trending</span>
                   {["Mosman", "Paddington", "Surry Hills", "Bondi"].map((s) => (
-                    <Link key={s} to="/property" className="hover:text-gold transition">{s}</Link>
+                    <Link
+                      key={s}
+                      to="/property"
+                      className="px-3 py-1 rounded-full border border-white/15 hover:border-gold/60 hover:text-gold transition"
+                    >
+                      {s}
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -88,40 +110,22 @@ function HomePage() {
                 { k: "485", v: "Five-star reviews" },
                 { k: "21 days", v: "Avg. days on market" },
               ].map((s) => (
-                <div key={s.v} className="rounded-2xl bg-white/8 backdrop-blur-md border border-white/15 p-5">
-                  <div className="font-display text-3xl text-gold">{s.k}</div>
-                  <div className="text-xs text-white/70 mt-1 uppercase tracking-wider">{s.v}</div>
+                <div
+                  key={s.v}
+                  className="group relative rounded-2xl bg-white/[0.04] backdrop-blur-md border border-white/10 p-5 hover:border-gold/40 transition overflow-hidden"
+                >
+                  <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-gold/60 to-transparent opacity-0 group-hover:opacity-100 transition" />
+                  <div className="font-display text-3xl font-bold text-gold tracking-tight">{s.k}</div>
+                  <div className="text-[11px] text-white/60 mt-1.5 uppercase tracking-[0.2em]">{s.v}</div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
 
-        <div className="relative bg-primary-dark text-white">
-          <div className="container mx-auto px-4 lg:px-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 py-5 text-center text-sm">
-            <div className="flex items-center gap-2">
-              <Award className="text-gold" size={18} />
-              <span>Award-winning agency &amp; agent · 2017–2026</span>
-            </div>
-            <span className="hidden md:inline w-px h-4 bg-white/20" />
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-0.5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={14} className="fill-gold text-gold" />
-                ))}
-              </div>
-              <span className="text-white/80"><strong className="text-white">4.9</strong> from 485 client reviews</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* PROPERTY SEARCH */}
-      <section className="py-16 md:py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <SectionHeading eyebrow="Find your next home" title="Search the local market" subtitle="Filter by suburb, type, price, bedrooms and key features to find the property that fits." />
-          <div className="mt-10">
-            <PropertySearch />
+          {/* Scroll cue */}
+          <div className="hidden md:flex items-center gap-3 mt-20 text-[11px] uppercase tracking-[0.3em] text-white/40">
+            <span className="w-12 h-px bg-white/30" />
+            Scroll to explore
           </div>
         </div>
       </section>
