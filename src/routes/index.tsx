@@ -145,27 +145,47 @@ function HomePage() {
           </div>
         </div>
       </section> */}
-      {/* HERO SECTION - REFINED EDITORIAL LAYOUT */}
-      <section className="relative h-[95vh] min-h-[700px] w-full flex items-center overflow-hidden bg-primary-dark font-sans text-primary-foreground selection:bg-gold-soft selection:text-ink">
 
-        {/* 1. Optimized Cinematic Background Image */}
+      <style>
+        {`
+         @keyframes customKenBurns {
+           0% { transform: scale(1); opacity: 0; }
+           /* Fast fade-in while motion already started */
+           10% { opacity: 0.9; } 
+           /* Continuous linear motion */
+           100% { transform: scale(1.1); opacity: 0.9; }
+         }
+         .animate-immediate-cinema {
+           /* forwards ensures it stays at scale(1.1) at the end */
+           animation: customKenBurns 30s linear forwards; 
+         }
+       `}
+      </style>
+
+      {/* HERO SECTION - REFINED EDITORIAL LAYOUT */}
+      {/* HERO SECTION - MOBILE-FIRST, CINEMATIC REDESIGN */}
+      <section className="relative min-h-screen lg:h-[95vh] lg:min-h-[700px] w-full flex items-center overflow-hidden bg-primary-dark font-sans text-primary-foreground selection:bg-gold-soft selection:text-ink">
+
+        {/* 1. Cinematic Background with IMMEDIATE Slow Zoom */}
         <div className="absolute inset-0 z-0 h-full w-full">
           <img
-            src={heroicResidence} // Use the generated image provided below
+            src={heroicResidence}
             alt="PHM Elite Estates - Premium Australian Residence at Twilight"
-            className={`w-full h-full object-cover scale-105 transition-all duration-[15s] ease-out-sine ${loaded ? 'opacity-70 scale-100 blur-0' : 'opacity-0 scale-110 blur-sm'
-              }`}
+            className="w-full h-full object-cover animate-immediate-cinema"
           />
-          {/* Layered Luxury Gradients (Emerald Deep) for perfect text readability */}
-          {/* The gradients transition from dark emerald (left) to transparent (right) */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-dark via-primary-dark/85 to-transparent z-10" />
-          <div className="absolute inset-0 bg-gradient-hero-vignette z-10" />
+          {/* CINEMATIC LAYERING: Optimized gradients for text pop and depth */}
+          {/* Left vignette for text (Mobile First: heavy, fades on lg) */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/100 via-primary-dark/85 to-primary-dark/40 lg:via-primary-dark/70 lg:to-transparent z-10" />
+
+          {/* Bottom vignette for ground framing (Stronger cinema feel) */}
+          <div className="absolute inset-0 bg-gradient-to-t from-primary-dark/95 via-primary-dark/20 to-black/10 z-10" />
+
           {/* subtle grain texture for depth */}
           <div className="absolute inset-0 grain opacity-40 mix-blend-overlay z-10" />
         </div>
 
-        {/* 2. Main Content Grid - Balanced Asymmetry */}
-        <div className="relative z-20 container mx-auto px-6 lg:px-12 grid lg:grid-cols-12 gap-12 pt-28 pb-20">
+        {/* 2. Main Content Grid - Refined Asymmetry */}
+        <div className="relative z-20 container mx-auto px-5 lg:px-12 grid lg:grid-cols-12 gap-x-12 pt-24 pb-16 lg:pt-28 lg:pb-20">
 
           {/* Left Column - Main Branding & Typography */}
           <div
@@ -173,65 +193,72 @@ function HomePage() {
               }`}
           >
             {/* Elegant, Non-Intrusive Eyebrow */}
-            <div className="flex items-center gap-6 mb-8">
-              <span className="w-16 h-[2px] bg-gold" />
+            <div className="flex items-center gap-4 mb-6 lg:mb-8">
+              <span className="w-12 h-[2px] bg-gold" />
               <p className="text-white/80 uppercase tracking-[0.4em] text-[10px] font-bold">
                 PHM Elite Estates
               </p>
             </div>
 
             {/* Massive Architectural Typography (Jakarta Sans) */}
-            <h1 className="font-display text-white text-5xl md:text-6xl lg:text-[6.5rem] font-extrabold leading-[1.0] tracking-tighter mb-8 drop-shadow-2xl">
+            {/* Mobile First sizing: optimized text-4xl -> text-7xl */}
+            <h1 className="font-display text-white text-4xl md:text-5xl lg:text-7xl font-extrabold leading-[1.05] lg:leading-[1.0] tracking-tighter mb-8 drop-shadow-2xl text-balance">
               A NEW STANDARD <br className="hidden md:block" />
               FOR{" "}
               {/* Gold Shimmer Text Effect */}
-              <span className="text-gold-shine">Refined</span>{" "}
+              <span className="text-gold-shine relative inline-block whitespace-nowrap">Refined
+                <svg className="absolute -bottom-2 lg:-bottom-3 left-0 w-full h-3 lg:h-4" viewBox="0 0 200 12" preserveAspectRatio="none">
+                  <path d="M2 8 Q 50 2, 100 6 T 198 4" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" className="text-gold" />
+                </svg>
+              </span>{" "}
               living.
             </h1>
 
-            <p className="text-white/80 text-lg md:text-xl font-light max-w-xl border-l-[3px] border-gold pl-6 mb-12 shadow-elegant">
+            {/* Subtitle - Subtly Reduced weight/size for premium feel */}
+            <p className="text-white/80 text-base md:text-lg font-light max-w-xl border-l-[3px] border-gold/40 pl-6 mb-12 shadow-elegant">
               Representing Australia's most considered homes — pairing deep local knowledge with the discretion and craft of a private brokerage.
             </p>
           </div>
 
           {/* Right Column - Interactive 'Console' Search Area */}
           <div
-            className={`lg:col-span-5 flex items-center justify-end transition-all duration-1000 ease-out-sine delay-600 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            className={`lg:col-span-5 flex items-center lg:justify-end mt-12 lg:mt-0 transition-all duration-1000 ease-out-sine delay-600 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
               }`}
           >
-            <div className="w-full max-w-md bg-white rounded-xl p-3 shadow-elegant border border-cream">
+            {/* MOBILE VIEW FIX: Old refined aesthetics with optimization */}
+            <div className="w-full lg:max-w-md bg-white rounded-xl p-3 lg:p-4 shadow-elegant border border-cream">
 
-              {/* Appraisal Callout Card */}
-              <div className="bg-primary/5 border border-primary/10 rounded-lg p-6 mb-3 flex flex-col gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 grid place-items-center rounded-full bg-gold-soft text-gold-deep shadow-inner">
-                    <Zap size={24} className="animate-pulse" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-display font-semibold text-lg text-ink">Selling Your Property?</h4>
-                    <p className="text-xs text-ink/70">Request a premium market estimation instantly.</p>
-                  </div>
+              {/* Appraisal Callout Card (Mobile First Spacing) */}
+              <div className="bg-primary/5 border border-primary/10 rounded-lg p-5 lg:p-6 mb-3 flex flex-col sm:flex-row items-center gap-4 sm:gap-3 text-center sm:text-left">
+                <div className="w-12 h-12 shrink-0 grid place-items-center rounded-full bg-gold-soft text-gold-deep shadow-inner">
+                  <Zap size={24} className="animate-pulse" />
                 </div>
-                <Link
-                  to="/selling"
-                  className="inline-flex items-center justify-center gap-2 bg-gradient-gold text-gold-foreground font-semibold px-8 h-12 rounded-md hover:bg-gold-deep transition-all duration-300 shadow-gold"
-                >
-                  Request appraisal
-                  <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
-                </Link>
+                <div className="flex-1 flex flex-col sm:flex-row items-center gap-3">
+                  <div>
+                    <h4 className="font-display font-semibold text-lg text-ink leading-tight">Selling Your Property?</h4>
+                    <p className="text-sm text-ink/70">Request a premium market estimation instantly.</p>
+                  </div>
+                  <Link
+                    to="/selling"
+                    className="inline-flex items-center justify-center gap-2 bg-gradient-gold text-gold-foreground font-semibold px-6 h-10 rounded-md hover:bg-gold-deep transition-all duration-300 shadow-gold w-full sm:w-auto"
+                  >
+                    Appraisal
+                  </Link>
+                </div>
               </div>
 
               {/* Refined Search Area (Buy/Rent) */}
-              <div className="p-4 flex flex-col gap-3">
+              <div className="p-2 lg:p-4 flex flex-col gap-3">
                 <p className="text-ink text-xs uppercase tracking-[0.2em] font-semibold text-center mb-1">Search Properties</p>
-                <div className="flex flex-col sm:flex-row gap-1.5 p-1 bg-cream rounded-md border border-input">
-                  {/* Simplified Tab Interface */}
-                  <button className="flex-1 h-10 px-4 rounded font-medium text-sm bg-primary text-white shadow">Buy</button>
-                  <button className="flex-1 h-10 px-4 rounded font-medium text-sm text-ink/70 hover:bg-muted transition">Rent</button>
-                  <button className="flex-1 h-10 px-4 rounded font-medium text-sm text-ink/70 hover:bg-muted transition">Sold</button>
+
+                {/* Mobile First: tight padding, small font size to fit. No stacking. */}
+                <div className="flex flex-row gap-1 p-1 bg-cream rounded-md border border-input">
+                  {["Buy", "Rent", "Sold"].map((mode, i) => (
+                    <button key={mode} className={`flex-1 h-10 rounded font-medium text-sm transition-all duration-300 whitespace-nowrap ${i === 0 ? 'bg-primary text-white shadow' : 'text-ink/70 hover:bg-muted'}`}>{mode}</button>
+                  ))}
                 </div>
 
-                {/* Clean Input Field */}
+                {/* Clean Input Field (Luxury feel spacing) */}
                 <div className="relative mt-2">
                   <MapPin size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary shrink-0" />
                   <input
@@ -239,11 +266,15 @@ function HomePage() {
                     placeholder="Suburb, postcode or street"
                     className="w-full h-14 pl-12 pr-6 rounded-lg bg-card text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-1 focus:ring-ring border border-input text-sm font-medium"
                   />
+                  <button className="absolute right-1.5 top-1.5 bg-gradient-gold-shine text-gold-foreground h-11 px-6 rounded-md hover:opacity-95 transition flex items-center gap-2">
+                    <Search size={18} />
+                    <span className="font-semibold text-sm">Search</span>
+                  </button>
                 </div>
 
                 {/* Advanced Search Link */}
                 <Link to="/property" className="flex items-center gap-2 text-ink text-xs hover:text-primary transition font-medium self-end group">
-                  View More Filters
+                  More Filters
                   <LayoutGrid size={14} className="group-hover:rotate-6 transition-transform" />
                 </Link>
               </div>
