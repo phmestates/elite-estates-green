@@ -4,7 +4,7 @@ export const site = {
   tagline: "Premium real estate, personally delivered.",
   phone: "(02) 5550 0100",
   phoneHref: "tel:+61255500100",
-  email: "hello@phmeliteestates.com.au",
+  email: "admin@phmestates.com",
   address: "Suite 14, 220 Crown Boulevard, Sydney NSW 2000",
   hours: "Mon–Fri 8:30am – 6:00pm · Sat 9:00am – 4:00pm",
   socials: {

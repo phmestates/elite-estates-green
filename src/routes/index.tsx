@@ -1,10 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Star, Search, ClipboardEdit, Mail, Award, ShieldCheck, Users, TrendingUp, Quote, MapPin, ArrowRight, Sparkles } from "lucide-react";
+import { Star, Search, ClipboardEdit, ChevronRight, Mail, Award, ShieldCheck, Users, TrendingUp, Quote, MapPin, ArrowRight, Sparkles, Zap, LayoutGrid } from "lucide-react";
 import { PropertySearch } from "@/components/PropertySearch";
 import { PropertyCard } from "@/components/PropertyCard";
 import { CtaBand } from "@/components/CtaBand";
 import { properties } from "@/data/properties";
 import { testimonials } from "@/data/testimonials";
+import { useEffect, useState } from "react";
+
+import heroicResidence from "@/assets/emerald-twilight-residence.webp";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -20,16 +23,22 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   const featured = properties.filter((p) => p.status === "For Sale").slice(0, 6);
+  const [loaded, setLoaded] = useState(false);
 
+  // Trigger animations after component mounts
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
   return (
     <>
       {/* HERO */}
-      <section className="relative overflow-hidden bg-primary-dark min-h-[92vh] flex items-center">
+      {/* <section className="relative overflow-hidden bg-primary-dark min-h-[92vh] flex items-center">
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=2400&q=85"
+            // src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1800&q=70"
             alt="Luxury contemporary residence at twilight"
-            className="w-full h-full object-cover scale-105 opacity-90"
+            className="w-full h-full object-cover scale-105 opacity-100"
           />
           <div className="absolute inset-0 bg-gradient-hero" />
           <div className="absolute inset-0 bg-gradient-hero-vignette" />
@@ -53,7 +62,7 @@ function HomePage() {
             <div className="lg:col-span-8">
               <div className="flex items-center gap-4 text-[11px] font-medium tracking-[0.4em] uppercase text-white/55">
                 <span className="w-10 h-px bg-gold" />
-                <span>Est. 2009 — Sydney</span>
+                <span>Est. 2026 — Sydney</span>
               </div>
 
               <h1 className="mt-7 font-display font-bold text-5xl md:text-6xl lg:text-[5.25rem] leading-[1.02] tracking-[-0.035em] text-balance">
@@ -135,8 +144,118 @@ function HomePage() {
             Scroll to explore
           </div>
         </div>
-      </section>
+      </section> */}
+      {/* HERO SECTION - REFINED EDITORIAL LAYOUT */}
+      <section className="relative h-[95vh] min-h-[700px] w-full flex items-center overflow-hidden bg-primary-dark font-sans text-primary-foreground selection:bg-gold-soft selection:text-ink">
 
+        {/* 1. Optimized Cinematic Background Image */}
+        <div className="absolute inset-0 z-0 h-full w-full">
+          <img
+            src={heroicResidence} // Use the generated image provided below
+            alt="PHM Elite Estates - Premium Australian Residence at Twilight"
+            className={`w-full h-full object-cover scale-105 transition-all duration-[15s] ease-out-sine ${loaded ? 'opacity-70 scale-100 blur-0' : 'opacity-0 scale-110 blur-sm'
+              }`}
+          />
+          {/* Layered Luxury Gradients (Emerald Deep) for perfect text readability */}
+          {/* The gradients transition from dark emerald (left) to transparent (right) */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-dark via-primary-dark/85 to-transparent z-10" />
+          <div className="absolute inset-0 bg-gradient-hero-vignette z-10" />
+          {/* subtle grain texture for depth */}
+          <div className="absolute inset-0 grain opacity-40 mix-blend-overlay z-10" />
+        </div>
+
+        {/* 2. Main Content Grid - Balanced Asymmetry */}
+        <div className="relative z-20 container mx-auto px-6 lg:px-12 grid lg:grid-cols-12 gap-12 pt-28 pb-20">
+
+          {/* Left Column - Main Branding & Typography */}
+          <div
+            className={`lg:col-span-7 flex flex-col justify-center transition-all duration-1000 ease-out-sine delay-300 ${loaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'
+              }`}
+          >
+            {/* Elegant, Non-Intrusive Eyebrow */}
+            <div className="flex items-center gap-6 mb-8">
+              <span className="w-16 h-[2px] bg-gold" />
+              <p className="text-white/80 uppercase tracking-[0.4em] text-[10px] font-bold">
+                PHM Elite Estates
+              </p>
+            </div>
+
+            {/* Massive Architectural Typography (Jakarta Sans) */}
+            <h1 className="font-display text-white text-5xl md:text-6xl lg:text-[6.5rem] font-extrabold leading-[1.0] tracking-tighter mb-8 drop-shadow-2xl">
+              A NEW STANDARD <br className="hidden md:block" />
+              FOR{" "}
+              {/* Gold Shimmer Text Effect */}
+              <span className="text-gold-shine">Refined</span>{" "}
+              living.
+            </h1>
+
+            <p className="text-white/80 text-lg md:text-xl font-light max-w-xl border-l-[3px] border-gold pl-6 mb-12 shadow-elegant">
+              Representing Australia's most considered homes — pairing deep local knowledge with the discretion and craft of a private brokerage.
+            </p>
+          </div>
+
+          {/* Right Column - Interactive 'Console' Search Area */}
+          <div
+            className={`lg:col-span-5 flex items-center justify-end transition-all duration-1000 ease-out-sine delay-600 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              }`}
+          >
+            <div className="w-full max-w-md bg-white rounded-xl p-3 shadow-elegant border border-cream">
+
+              {/* Appraisal Callout Card */}
+              <div className="bg-primary/5 border border-primary/10 rounded-lg p-6 mb-3 flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 grid place-items-center rounded-full bg-gold-soft text-gold-deep shadow-inner">
+                    <Zap size={24} className="animate-pulse" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-display font-semibold text-lg text-ink">Selling Your Property?</h4>
+                    <p className="text-xs text-ink/70">Request a premium market estimation instantly.</p>
+                  </div>
+                </div>
+                <Link
+                  to="/selling"
+                  className="inline-flex items-center justify-center gap-2 bg-gradient-gold text-gold-foreground font-semibold px-8 h-12 rounded-md hover:bg-gold-deep transition-all duration-300 shadow-gold"
+                >
+                  Request appraisal
+                  <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+              </div>
+
+              {/* Refined Search Area (Buy/Rent) */}
+              <div className="p-4 flex flex-col gap-3">
+                <p className="text-ink text-xs uppercase tracking-[0.2em] font-semibold text-center mb-1">Search Properties</p>
+                <div className="flex flex-col sm:flex-row gap-1.5 p-1 bg-cream rounded-md border border-input">
+                  {/* Simplified Tab Interface */}
+                  <button className="flex-1 h-10 px-4 rounded font-medium text-sm bg-primary text-white shadow">Buy</button>
+                  <button className="flex-1 h-10 px-4 rounded font-medium text-sm text-ink/70 hover:bg-muted transition">Rent</button>
+                  <button className="flex-1 h-10 px-4 rounded font-medium text-sm text-ink/70 hover:bg-muted transition">Sold</button>
+                </div>
+
+                {/* Clean Input Field */}
+                <div className="relative mt-2">
+                  <MapPin size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary shrink-0" />
+                  <input
+                    type="text"
+                    placeholder="Suburb, postcode or street"
+                    className="w-full h-14 pl-12 pr-6 rounded-lg bg-card text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-1 focus:ring-ring border border-input text-sm font-medium"
+                  />
+                </div>
+
+                {/* Advanced Search Link */}
+                <Link to="/property" className="flex items-center gap-2 text-ink text-xs hover:text-primary transition font-medium self-end group">
+                  View More Filters
+                  <LayoutGrid size={14} className="group-hover:rotate-6 transition-transform" />
+                </Link>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* 3. Hairline Structural Separation Border */}
+        <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent z-10" />
+
+      </section>
       {/* FEATURE CARDS */}
       <section className="py-16 md:py-20 bg-secondary">
         <div className="container mx-auto px-4 grid gap-6 md:grid-cols-3">
