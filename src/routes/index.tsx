@@ -27,9 +27,9 @@ function HomePage() {
       <section className="relative overflow-hidden bg-primary-dark min-h-[92vh] flex items-center">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=80"
-            alt="Premium architectural home"
-            className="w-full h-full object-cover scale-110 opacity-95"
+            src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=2400&q=85"
+            alt="Luxury contemporary residence at twilight"
+            className="w-full h-full object-cover scale-105 opacity-90"
           />
           <div className="absolute inset-0 bg-gradient-hero" />
           <div className="absolute inset-0 bg-gradient-hero-vignette" />
