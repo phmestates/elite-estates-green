@@ -67,10 +67,11 @@
   --accent: oklch(0.95 0.025 152);
   --accent-foreground: oklch(0.22 0.06 160);
 
-  /* Champagne gold */
-  --gold: oklch(0.82 0.13 88);
-  --gold-foreground: oklch(0.20 0.04 80);
-  --gold-soft: oklch(0.92 0.07 88);
+  /* Rich metallic gold */
+  --gold: oklch(0.78 0.17 82);
+  --gold-foreground: oklch(0.18 0.04 70);
+  --gold-soft: oklch(0.88 0.12 86);
+  --gold-deep: oklch(0.62 0.16 70);
 
   --cream: oklch(0.97 0.02 90);
 
@@ -84,12 +85,14 @@
   --ink: oklch(0.13 0.015 160);
 
   /* Reusable design tokens */
-  --gradient-hero: linear-gradient(120deg, oklch(0.16 0.035 160 / 0.85) 0%, oklch(0.20 0.05 162 / 0.55) 45%, oklch(0.18 0.04 160 / 0.15) 100%);
-  --gradient-hero-vignette: radial-gradient(ellipse at 30% 70%, oklch(0.14 0.03 160 / 0.6) 0%, transparent 60%);
-  --gradient-gold: linear-gradient(135deg, oklch(0.86 0.13 92), oklch(0.74 0.14 78));
-  --gradient-emerald: linear-gradient(135deg, oklch(0.32 0.10 160), oklch(0.48 0.14 152));
-  --shadow-elegant: 0 20px 60px -25px oklch(0.22 0.08 160 / 0.35);
-  --shadow-gold: 0 12px 40px -16px oklch(0.78 0.14 85 / 0.55);
+  --gradient-hero: linear-gradient(125deg, oklch(0.14 0.04 162 / 0.92) 0%, oklch(0.18 0.05 160 / 0.65) 50%, oklch(0.16 0.04 158 / 0.25) 100%);
+  --gradient-hero-vignette: radial-gradient(ellipse at 25% 80%, oklch(0.10 0.03 160 / 0.7) 0%, transparent 65%);
+  --gradient-gold: linear-gradient(135deg, oklch(0.92 0.13 92) 0%, oklch(0.80 0.18 84) 45%, oklch(0.62 0.16 70) 100%);
+  --gradient-gold-shine: linear-gradient(110deg, oklch(0.72 0.16 75) 0%, oklch(0.92 0.14 92) 35%, oklch(0.78 0.18 82) 60%, oklch(0.58 0.14 68) 100%);
+  --gradient-emerald: linear-gradient(135deg, oklch(0.28 0.10 160), oklch(0.50 0.15 152));
+  --shadow-elegant: 0 20px 60px -25px oklch(0.20 0.08 160 / 0.45);
+  --shadow-gold: 0 14px 44px -14px oklch(0.72 0.18 78 / 0.6);
+  --text-gold-shine: linear-gradient(95deg, oklch(0.92 0.14 92) 0%, oklch(0.78 0.18 82) 50%, oklch(0.62 0.16 70) 100%);
 }
 
 @layer base {
@@ -117,12 +120,30 @@
   .bg-gradient-hero { background: var(--gradient-hero); }
   .bg-gradient-hero-vignette { background: var(--gradient-hero-vignette); }
   .bg-gradient-gold { background: var(--gradient-gold); }
+  .bg-gradient-gold-shine { background: var(--gradient-gold-shine); }
   .bg-gradient-emerald { background: var(--gradient-emerald); }
   .shadow-elegant { box-shadow: var(--shadow-elegant); }
   .shadow-gold { box-shadow: var(--shadow-gold); }
   .text-balance { text-wrap: balance; }
+  .text-gold-shine {
+    background: var(--text-gold-shine);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-size: 200% 100%;
+    animation: gold-shimmer 6s ease-in-out infinite;
+  }
   .grain {
-    background-image: radial-gradient(oklch(1 0 0 / 0.04) 1px, transparent 1px);
+    background-image: radial-gradient(oklch(1 0 0 / 0.05) 1px, transparent 1px);
     background-size: 3px 3px;
   }
+  @keyframes gold-shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    50% { transform: translateY(-20px) translateX(10px); }
+  }
+  .animate-float-slow { animation: float-slow 12s ease-in-out infinite; }
 }
