@@ -24,55 +24,63 @@ function HomePage() {
   return (
     <>
       {/* HERO */}
-      <section className="relative overflow-hidden bg-primary-dark">
+      <section className="relative overflow-hidden bg-primary-dark min-h-[92vh] flex items-center">
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=80"
             alt="Premium architectural home"
-            className="w-full h-full object-cover scale-105 opacity-90"
+            className="w-full h-full object-cover scale-110 opacity-95"
           />
           <div className="absolute inset-0 bg-gradient-hero" />
           <div className="absolute inset-0 bg-gradient-hero-vignette" />
-          <div className="absolute inset-0 grain opacity-60 mix-blend-overlay" />
-          {/* Decorative ambient glows */}
-          <div className="absolute -top-32 -right-24 w-[28rem] h-[28rem] rounded-full bg-gold/15 blur-[120px]" />
-          <div className="absolute bottom-[-10rem] left-[10%] w-[34rem] h-[34rem] rounded-full bg-primary-glow/10 blur-[140px]" />
-          {/* Subtle grid lines */}
+          <div className="absolute inset-0 grain opacity-50 mix-blend-overlay" />
+          <div className="absolute top-[-8rem] right-[-6rem] w-[36rem] h-[36rem] rounded-full bg-gold/25 blur-[140px] animate-float-slow" />
+          <div className="absolute bottom-[-12rem] left-[-4rem] w-[40rem] h-[40rem] rounded-full bg-primary-glow/20 blur-[160px]" />
+          <div className="absolute top-1/3 left-1/2 w-[20rem] h-[20rem] rounded-full bg-gold/10 blur-[100px]" />
           <div
-            className="absolute inset-0 opacity-[0.07]"
+            className="absolute inset-0 opacity-[0.05]"
             style={{
               backgroundImage:
                 "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
-              backgroundSize: "80px 80px",
+              backgroundSize: "90px 90px",
             }}
           />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-background/95" />
         </div>
 
-        <div className="relative container mx-auto px-4 lg:px-8 pt-24 pb-32 md:pt-32 md:pb-40 text-white">
-          <div className="grid lg:grid-cols-12 gap-12 items-end">
+        <div className="relative container mx-auto px-4 lg:px-8 pt-28 pb-32 md:pt-32 text-white w-full">
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-8">
-              {/* Tag chip */}
-              <span className="inline-flex items-center gap-2.5 text-[11px] font-medium tracking-[0.3em] uppercase text-gold/90">
-                <span className="w-8 h-px bg-gold/70" />
-                Sydney · Boutique Real Estate
+              <span className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-gold/30 bg-gold/5 backdrop-blur-sm text-[11px] font-medium tracking-[0.28em] uppercase">
+                <span className="w-1.5 h-1.5 rounded-full bg-gradient-gold shadow-gold" />
+                <span className="text-gold-shine">Sydney · Boutique Real Estate</span>
               </span>
 
-              <h1 className="mt-8 font-display font-extrabold text-5xl md:text-6xl lg:text-[5.25rem] leading-[1.02] tracking-[-0.03em] text-balance">
+              <h1 className="mt-8 font-display font-extrabold text-5xl md:text-6xl lg:text-[5.5rem] leading-[1.0] tracking-[-0.035em] text-balance">
                 Find a home that<br className="hidden md:block" /> feels{" "}
                 <span className="relative inline-block">
-                  <span className="relative z-10 italic font-light text-gold">unmistakably</span>
-                  <span className="absolute bottom-1 left-0 right-0 h-3 bg-gold/20 -z-0" />
+                  <span className="relative z-10 italic font-light text-gold-shine">unmistakably</span>
+                  <svg className="absolute -bottom-2 left-0 w-full h-3" viewBox="0 0 200 12" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="goldStroke" x1="0" x2="1">
+                        <stop offset="0%" stopColor="oklch(0.92 0.14 92)" />
+                        <stop offset="100%" stopColor="oklch(0.62 0.16 70)" />
+                      </linearGradient>
+                    </defs>
+                    <path d="M2 8 Q 50 2, 100 6 T 198 4" stroke="url(#goldStroke)" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+                  </svg>
                 </span>{" "}
                 yours.
               </h1>
 
-              <p className="mt-7 text-lg md:text-xl text-white/75 max-w-xl leading-relaxed font-light">
+              <p className="mt-8 text-lg md:text-xl text-white/75 max-w-xl leading-relaxed font-light">
                 We curate Australia's most considered homes — pairing local insight with
                 concierge-grade service from first viewing to final settlement.
               </p>
 
               <div className="mt-10 max-w-2xl">
-                <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-2 flex flex-col sm:flex-row gap-2 shadow-elegant ring-1 ring-white/10">
+                <div className="relative bg-white/95 backdrop-blur-xl rounded-2xl p-2 flex flex-col sm:flex-row gap-2 shadow-elegant ring-1 ring-gold/30">
+                  <div className="absolute -inset-px rounded-2xl bg-gradient-gold opacity-40 blur-md -z-10" />
                   <div className="flex items-center gap-2 flex-1 px-4">
                     <MapPin size={18} className="text-primary" />
                     <input
@@ -83,19 +91,19 @@ function HomePage() {
                   </div>
                   <Link
                     to="/selling"
-                    className="inline-flex items-center justify-center gap-2 bg-gradient-emerald text-primary-foreground font-medium px-6 h-12 rounded-xl hover:opacity-95 transition shadow-gold group"
+                    className="inline-flex items-center justify-center gap-2 bg-gradient-gold-shine text-gold-foreground font-semibold px-6 h-12 rounded-xl hover:opacity-95 transition shadow-gold group"
                   >
                     Get a free appraisal
                     <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
                   </Link>
                 </div>
-                <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-white/60">
-                  <span className="uppercase tracking-wider">Trending</span>
+                <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-white/55">
+                  <span className="uppercase tracking-[0.25em]">Trending</span>
                   {["Mosman", "Paddington", "Surry Hills", "Bondi"].map((s) => (
                     <Link
                       key={s}
                       to="/property"
-                      className="px-3 py-1 rounded-full border border-white/15 hover:border-gold/60 hover:text-gold transition"
+                      className="px-3 py-1.5 rounded-full border border-white/15 hover:border-gold hover:text-gold hover:bg-gold/5 transition"
                     >
                       {s}
                     </Link>
@@ -112,19 +120,19 @@ function HomePage() {
               ].map((s) => (
                 <div
                   key={s.v}
-                  className="group relative rounded-2xl bg-white/[0.04] backdrop-blur-md border border-white/10 p-5 hover:border-gold/40 transition overflow-hidden"
+                  className="group relative rounded-2xl bg-white/[0.05] backdrop-blur-md border border-white/10 p-6 hover:border-gold/50 hover:bg-white/[0.08] transition-all overflow-hidden"
                 >
-                  <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-gold/60 to-transparent opacity-0 group-hover:opacity-100 transition" />
-                  <div className="font-display text-3xl font-bold text-gold tracking-tight">{s.k}</div>
-                  <div className="text-[11px] text-white/60 mt-1.5 uppercase tracking-[0.2em]">{s.v}</div>
+                  <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-gold to-transparent opacity-0 group-hover:opacity-100 transition" />
+                  <div className="absolute -right-6 -top-6 w-20 h-20 rounded-full bg-gold/10 blur-2xl opacity-0 group-hover:opacity-100 transition" />
+                  <div className="relative font-display text-3xl lg:text-[2.25rem] font-bold text-gold-shine tracking-tight">{s.k}</div>
+                  <div className="relative text-[11px] text-white/60 mt-2 uppercase tracking-[0.22em]">{s.v}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Scroll cue */}
-          <div className="hidden md:flex items-center gap-3 mt-20 text-[11px] uppercase tracking-[0.3em] text-white/40">
-            <span className="w-12 h-px bg-white/30" />
+          <div className="hidden md:flex items-center gap-3 mt-16 text-[10px] uppercase tracking-[0.35em] text-white/40">
+            <span className="w-12 h-px bg-gradient-to-r from-gold/60 to-transparent" />
             Scroll to explore
           </div>
         </div>
