@@ -123,6 +123,8 @@
   .bg-gradient-gold { background: var(--gradient-gold); }
   .bg-gradient-gold-shine { background: var(--gradient-gold-shine); }
   .bg-gradient-emerald { background: var(--gradient-emerald); }
+  .bg-gradient-emerald-deep { background: var(--gradient-emerald-deep); }
+  .bg-gradient-gold-rich { background: var(--gradient-gold-rich); }
   .shadow-elegant { box-shadow: var(--shadow-elegant); }
   .shadow-gold { box-shadow: var(--shadow-gold); }
   .text-balance { text-wrap: balance; }
