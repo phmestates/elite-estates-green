@@ -51,15 +51,15 @@ function HomePage() {
         <div className="relative container mx-auto px-4 lg:px-8 pt-28 pb-32 md:pt-32 text-white w-full">
           <div className="grid lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-8">
-              <span className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-gold/30 bg-gold/5 backdrop-blur-sm text-[11px] font-medium tracking-[0.28em] uppercase">
-                <span className="w-1.5 h-1.5 rounded-full bg-gradient-gold shadow-gold" />
-                <span className="text-gold-shine">Sydney · Boutique Real Estate</span>
-              </span>
+              <div className="flex items-center gap-4 text-[11px] font-medium tracking-[0.4em] uppercase text-white/55">
+                <span className="w-10 h-px bg-gold" />
+                <span>Est. 2009 — Sydney</span>
+              </div>
 
-              <h1 className="mt-8 font-display font-extrabold text-5xl md:text-6xl lg:text-[5.5rem] leading-[1.0] tracking-[-0.035em] text-balance">
-                Find a home that<br className="hidden md:block" /> feels{" "}
+              <h1 className="mt-7 font-display font-bold text-5xl md:text-6xl lg:text-[5.25rem] leading-[1.02] tracking-[-0.035em] text-balance">
+                A new standard<br className="hidden md:block" /> for{" "}
                 <span className="relative inline-block">
-                  <span className="relative z-10 italic font-light text-gold-shine">unmistakably</span>
+                  <span className="relative z-10 italic font-light text-gold-shine">refined</span>
                   <svg className="absolute -bottom-2 left-0 w-full h-3" viewBox="0 0 200 12" preserveAspectRatio="none">
                     <defs>
                       <linearGradient id="goldStroke" x1="0" x2="1">
@@ -70,30 +70,29 @@ function HomePage() {
                     <path d="M2 8 Q 50 2, 100 6 T 198 4" stroke="url(#goldStroke)" strokeWidth="2.5" fill="none" strokeLinecap="round" />
                   </svg>
                 </span>{" "}
-                yours.
+                living.
               </h1>
 
-              <p className="mt-8 text-lg md:text-xl text-white/75 max-w-xl leading-relaxed font-light">
-                We curate Australia's most considered homes — pairing local insight with
-                concierge-grade service from first viewing to final settlement.
+              <p className="mt-8 text-base md:text-lg text-white/70 max-w-xl leading-relaxed font-light">
+                PHM Elite Estates represents Australia's most considered homes — pairing
+                deep local knowledge with the discretion and craft of a private brokerage.
               </p>
 
               <div className="mt-10 max-w-2xl">
-                <div className="relative bg-white/95 backdrop-blur-xl rounded-2xl p-2 flex flex-col sm:flex-row gap-2 shadow-elegant ring-1 ring-gold/30">
-                  <div className="absolute -inset-px rounded-2xl bg-gradient-gold opacity-40 blur-md -z-10" />
-                  <div className="flex items-center gap-2 flex-1 px-4">
-                    <MapPin size={18} className="text-primary" />
+                <div className="bg-white rounded-xl p-1.5 flex flex-col sm:flex-row gap-1.5 shadow-elegant">
+                  <div className="flex items-center gap-3 flex-1 px-4">
+                    <MapPin size={18} className="text-primary shrink-0" />
                     <input
                       type="text"
-                      placeholder="Suburb, postcode or street"
-                      className="flex-1 h-12 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-sm"
+                      placeholder="Search by suburb, postcode or street"
+                      className="flex-1 h-12 bg-transparent text-foreground placeholder:text-muted-foreground/70 focus:outline-none text-sm"
                     />
                   </div>
                   <Link
                     to="/selling"
-                    className="inline-flex items-center justify-center gap-2 bg-gradient-gold-shine text-gold-foreground font-semibold px-6 h-12 rounded-xl hover:opacity-95 transition shadow-gold group"
+                    className="inline-flex items-center justify-center gap-2 bg-gradient-gold-shine text-gold-foreground font-semibold px-6 h-12 rounded-lg hover:opacity-95 transition shadow-gold group"
                   >
-                    Get a free appraisal
+                    Request appraisal
                     <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
                   </Link>
                 </div>
