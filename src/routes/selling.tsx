@@ -189,8 +189,7 @@ function InteractiveAppraisal() {
     propertyStatus: "",
   });
 
-  // Stable callback — never recreated, so FastInput/FastTextarea never get
-  // a new function reference on every keystroke (which was causing re-renders).
+  // Stable callback — never recreated, keeping the selector steps lightweight.
   const updateForm = useCallback((key: keyof typeof formData, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   }, []);
@@ -397,48 +396,6 @@ function StandaloneAppraisalForm() {
     </section>
   );
 }
-
-
-// --- SIMPLE CONTROLLED INPUTS ---
-// Plain controlled inputs. The previous debounced wrappers caused typing
-// to feel stuck / lose focus because of the inward-sync useEffect.
-
-function FastInput({ value, onChange, className, type, placeholder }: {
-  value: string;
-  onChange: (val: string) => void;
-  className?: string;
-  type?: string;
-  placeholder?: string;
-}) {
-  return (
-    <input
-      type={type}
-      className={className}
-      placeholder={placeholder}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      data-gramm="false"
-    />
-  );
-}
-
-function FastTextarea({ value, onChange, className, placeholder }: {
-  value: string;
-  onChange: (val: string) => void;
-  className?: string;
-  placeholder?: string;
-}) {
-  return (
-    <textarea
-      className={className}
-      placeholder={placeholder}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      data-gramm="false"
-    />
-  );
-}
-
 
 // --- HELPER COMPONENTS ---
 
