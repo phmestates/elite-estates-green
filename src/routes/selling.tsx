@@ -323,19 +323,7 @@ function InteractiveAppraisal() {
 
 
 function StandaloneAppraisalForm() {
-  const [formData, setFormData] = useState({
-    description: "",
-    address: "",
-    sameAddress: false,
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-  });
-
-  const updateForm = useCallback((key: keyof typeof formData, value: string | boolean) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
-  }, []);
+  const [sameAddress, setSameAddress] = useState(false);
 
   return (
     <section id="appraisal-details" className="scroll-mt-28 py-20 md:py-28 bg-secondary">
@@ -347,26 +335,25 @@ function StandaloneAppraisalForm() {
               Send your appraisal request
             </h2>
             <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
-              Add your contact and property details here. This section is separate from the interactive selector above, so typing stays smooth.
+              Share the essential property details and our team will prepare a focused market estimate for you.
             </p>
           </div>
 
           <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-elegant">
             <div className="mb-6">
               <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Property Address <span className="text-gold">*</span></label>
-              <FastInput
+              <input
                 type="text"
                 className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
                 placeholder="Street address, suburb, postcode"
-                value={formData.address}
-                onChange={(val: string) => updateForm("address", val)}
+                data-gramm="false"
               />
               <label className="flex items-center gap-3 mt-4 cursor-pointer group w-fit">
-                <span className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.sameAddress ? "bg-gold border-gold" : "border-border group-hover:border-gold"}`}>
-                  {formData.sameAddress && <Check size={14} className="text-primary-dark" />}
+                <span className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${sameAddress ? "bg-gold border-gold" : "border-border group-hover:border-gold"}`}>
+                  {sameAddress && <Check size={14} className="text-primary-dark" />}
                 </span>
                 <span className="text-sm text-muted-foreground select-none">The address above is also my home address</span>
-                <input type="checkbox" className="hidden" checked={formData.sameAddress} onChange={(e) => updateForm("sameAddress", e.target.checked)} />
+                <input type="checkbox" className="hidden" checked={sameAddress} onChange={(e) => setSameAddress(e.target.checked)} />
               </label>
             </div>
 
