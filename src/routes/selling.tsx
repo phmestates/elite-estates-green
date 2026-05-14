@@ -360,32 +360,31 @@ function StandaloneAppraisalForm() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
               <div>
                 <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">First Name <span className="text-gold">*</span></label>
-                <FastInput type="text" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" value={formData.firstName} onChange={(val: string) => updateForm("firstName", val)} />
+                <input type="text" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" data-gramm="false" />
               </div>
               <div>
                 <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Last Name <span className="text-gold">*</span></label>
-                <FastInput type="text" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" value={formData.lastName} onChange={(val: string) => updateForm("lastName", val)} />
+                <input type="text" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" data-gramm="false" />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
               <div>
                 <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Email <span className="text-gold">*</span></label>
-                <FastInput type="email" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" value={formData.email} onChange={(val: string) => updateForm("email", val)} />
+                <input type="email" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" data-gramm="false" />
               </div>
               <div>
                 <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Phone <span className="text-gold">*</span></label>
-                <FastInput type="tel" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" value={formData.phone} onChange={(val: string) => updateForm("phone", val)} />
+                <input type="tel" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" data-gramm="false" />
               </div>
             </div>
 
             <div className="mb-7">
               <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Additional details</label>
-              <FastTextarea
+              <textarea
                 className="w-full h-32 bg-background border border-border rounded-xl p-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all resize-none text-base"
                 placeholder="Any recent renovations or additional details? (Optional)"
-                value={formData.description}
-                onChange={(val: string) => updateForm("description", val)}
+                data-gramm="false"
               />
             </div>
 
