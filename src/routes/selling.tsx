@@ -75,7 +75,7 @@ import { ChevronRight, ChevronLeft, Check, Home, Building, MapPin, HelpCircle, A
 import { CtaBand } from "@/components/CtaBand";
 import { PropertyCard } from "@/components/PropertyCard";
 import { properties } from "@/data/properties";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import heroicResidence from "@/assets/emerald-twilight-residence.webp";
 
@@ -127,6 +127,8 @@ function SellingPage() {
         </div>
       </section>
 
+      <StandaloneAppraisalForm />
+
       {/* HOW WE SELL YOUR HOME */}
       <section className="py-20 md:py-32 bg-background">
         <div className="container mx-auto px-4 lg:px-8 max-w-5xl">
@@ -176,7 +178,7 @@ function SellingPage() {
 
 function InteractiveAppraisal() {
   const [step, setStep] = useState(1);
-  const totalSteps = 6;
+  const totalSteps = 5;
 
   // Form State
   const [formData, setFormData] = useState({
@@ -185,13 +187,6 @@ function InteractiveAppraisal() {
     priceRange: "",
     timeframe: "",
     propertyStatus: "",
-    description: "",
-    address: "",
-    sameAddress: false,
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
   });
 
   // Stable callback — never recreated, so FastInput/FastTextarea never get
@@ -202,6 +197,9 @@ function InteractiveAppraisal() {
 
   const nextStep = () => setStep((s) => Math.min(s + 1, totalSteps));
   const prevStep = () => setStep((s) => Math.max(s - 1, 1));
+  const goToContactDetails = () => {
+    document.getElementById("appraisal-details")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   // Validation
   const isNextEnabled = () => {
@@ -209,7 +207,7 @@ function InteractiveAppraisal() {
     if (step === 2) return formData.type !== "";
     if (step === 3) return formData.priceRange !== "";
     if (step === 4) return formData.timeframe !== "";
-    if (step === 5) return formData.propertyStatus !== "" || formData.description.trim() !== "";
+    if (step === 5) return formData.propertyStatus !== "";
     return true;
   };
 
