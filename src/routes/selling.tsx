@@ -71,11 +71,11 @@
 //   );
 // }
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronRight, ChevronLeft, Check, Home, Building, MapPin, HelpCircle, ArrowRight, DollarSign, Key } from "lucide-react";
+import { ChevronRight, ChevronLeft, Check, Home, Building, MapPin, HelpCircle, ArrowRight, DollarSign, Key, Users } from "lucide-react";
 import { CtaBand } from "@/components/CtaBand";
 import { PropertyCard } from "@/components/PropertyCard";
 import { properties } from "@/data/properties";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 
 import heroicResidence from "@/assets/emerald-twilight-residence.webp";
 
@@ -184,6 +184,7 @@ function InteractiveAppraisal() {
     type: "",
     priceRange: "",
     timeframe: "",
+    propertyStatus: "",
     description: "",
     address: "",
     sameAddress: false,
@@ -193,21 +194,23 @@ function InteractiveAppraisal() {
     phone: "",
   });
 
-  const updateForm = (key: keyof typeof formData, value: string | boolean) => {
+  // Stable callback — never recreated, so FastInput/FastTextarea never get
+  // a new function reference on every keystroke (which was causing re-renders).
+  const updateForm = useCallback((key: keyof typeof formData, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
-  };
+  }, []);
 
   const nextStep = () => setStep((s) => Math.min(s + 1, totalSteps));
   const prevStep = () => setStep((s) => Math.max(s - 1, 1));
 
-  // Determine if 'Next' should be enabled based on current step requirements
+  // Validation
   const isNextEnabled = () => {
     if (step === 1) return formData.intent !== "";
     if (step === 2) return formData.type !== "";
     if (step === 3) return formData.priceRange !== "";
     if (step === 4) return formData.timeframe !== "";
-    if (step === 5) return formData.description.trim() !== "";
-    return true; // Step 6 has its own submit logic
+    if (step === 5) return formData.propertyStatus !== "" || formData.description.trim() !== "";
+    return true;
   };
 
   return (
@@ -228,7 +231,7 @@ function InteractiveAppraisal() {
       </div>
 
       {/* Dynamic Form Content */}
-      <div className="w-full relative min-h-[400px] flex flex-col items-center justify-center">
+      <div className="w-full relative min-h-[440px] flex flex-col items-center justify-center">
 
         {step === 1 && (
           <StepContainer title="How much is my property worth?" subtitle="Connecting you with your area expert.">
@@ -271,35 +274,39 @@ function InteractiveAppraisal() {
         )}
 
         {step === 5 && (
-          <StepContainer
-            title="What best describes your property?"
-            subtitle="Please include details like: Tenanted, owner occupied, vacant, or any recent renovations."
-          >
-            <div className="w-full max-w-2xl">
-              <textarea
-                className="w-full h-40 bg-white/5 border border-white/20 rounded-xl p-5 text-white placeholder:text-white/40 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all resize-none text-lg"
-                placeholder="E.g., It's currently owner occupied and we recently renovated the kitchen..."
-                value={formData.description}
-                onChange={(e) => updateForm("description", e.target.value)}
-              />
+          <StepContainer title="What best describes your property?" subtitle="Select an option or provide specific details below.">
+            <div className="w-full max-w-2xl flex flex-col gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <SelectButton icon={<Home size={20} />} label="Owner Occupied" selected={formData.propertyStatus === "Owner Occupied"} onClick={() => updateForm("propertyStatus", "Owner Occupied")} />
+                <SelectButton icon={<Users size={20} />} label="Tenanted" selected={formData.propertyStatus === "Tenanted"} onClick={() => updateForm("propertyStatus", "Tenanted")} />
+                <SelectButton icon={<Key size={20} />} label="Vacant" selected={formData.propertyStatus === "Vacant"} onClick={() => updateForm("propertyStatus", "Vacant")} />
+              </div>
+              <div className="relative">
+                <FastTextarea
+                  className="w-full h-32 bg-white/5 border border-white/20 rounded-xl p-5 text-white placeholder:text-white/40 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all resize-none text-base"
+                  placeholder="Any recent renovations or additional details? (Optional)"
+                  value={formData.description}
+                  onChange={(val: string) => updateForm("description", val)}
+                />
+              </div>
             </div>
           </StepContainer>
         )}
 
         {step === 6 && (
           <StepContainer title="Final details for your appraisal" subtitle="Where should we send your premium market estimation?">
-            <div className="w-full max-w-2xl bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 sm:p-8 text-left">
+            <div className="w-full max-w-2xl bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 sm:p-8 text-left shadow-2xl">
 
               <div className="mb-6">
                 <label className="block text-xs font-bold text-white/70 uppercase tracking-widest mb-2">Property Address <span className="text-gold">*</span></label>
-                <input
+                <FastInput
                   type="text"
                   className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
                   placeholder="Street address, suburb, postcode"
                   value={formData.address}
-                  onChange={(e) => updateForm("address", e.target.value)}
+                  onChange={(val: string) => updateForm("address", val)}
                 />
-                <label className="flex items-center gap-3 mt-3 cursor-pointer group">
+                <label className="flex items-center gap-3 mt-4 cursor-pointer group w-fit">
                   <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.sameAddress ? 'bg-gold border-gold' : 'border-white/40 group-hover:border-gold'}`}>
                     {formData.sameAddress && <Check size={14} className="text-primary-dark" />}
                   </div>
@@ -311,26 +318,42 @@ function InteractiveAppraisal() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
                 <div>
                   <label className="block text-xs font-bold text-white/70 uppercase tracking-widest mb-2">First Name <span className="text-gold">*</span></label>
-                  <input type="text" className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
-                    value={formData.firstName} onChange={(e) => updateForm("firstName", e.target.value)} />
+                  <FastInput
+                    type="text"
+                    className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
+                    value={formData.firstName}
+                    onChange={(val: string) => updateForm("firstName", val)}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-white/70 uppercase tracking-widest mb-2">Last Name <span className="text-gold">*</span></label>
-                  <input type="text" className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
-                    value={formData.lastName} onChange={(e) => updateForm("lastName", e.target.value)} />
+                  <FastInput
+                    type="text"
+                    className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
+                    value={formData.lastName}
+                    onChange={(val: string) => updateForm("lastName", val)}
+                  />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-2">
                 <div>
                   <label className="block text-xs font-bold text-white/70 uppercase tracking-widest mb-2">Email <span className="text-gold">*</span></label>
-                  <input type="email" className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
-                    value={formData.email} onChange={(e) => updateForm("email", e.target.value)} />
+                  <FastInput
+                    type="email"
+                    className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
+                    value={formData.email}
+                    onChange={(val: string) => updateForm("email", val)}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-white/70 uppercase tracking-widest mb-2">Phone <span className="text-gold">*</span></label>
-                  <input type="tel" className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
-                    value={formData.phone} onChange={(e) => updateForm("phone", e.target.value)} />
+                  <FastInput
+                    type="tel"
+                    className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
+                    value={formData.phone}
+                    onChange={(val: string) => updateForm("phone", val)}
+                  />
                 </div>
               </div>
 
@@ -356,8 +379,8 @@ function InteractiveAppraisal() {
             onClick={nextStep}
             disabled={!isNextEnabled()}
             className={`inline-flex items-center gap-2 px-8 h-12 rounded-lg font-bold transition-all ${isNextEnabled()
-                ? "bg-gold text-primary-dark shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:bg-gold-shine hover:-translate-y-0.5"
-                : "bg-white/10 text-white/40 cursor-not-allowed"
+              ? "bg-gold text-primary-dark shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:bg-gold-shine hover:-translate-y-0.5"
+              : "bg-white/10 text-white/40 cursor-not-allowed"
               }`}
           >
             Next <ChevronRight size={18} />
@@ -374,6 +397,95 @@ function InteractiveAppraisal() {
     </div>
   );
 }
+
+
+// --- PERFORMANCE OPTIMIZED INPUT COMPONENTS ---
+// Key fixes vs the original:
+//   1. No useEffect for debouncing — we use a ref-based timer in the onChange
+//      handler itself, so it never fires on mount or on unrelated re-renders.
+//   2. The onChange ref is assigned directly on each render (not inside a
+//      useEffect), which eliminates the stale-closure bug without extra deps.
+//   3. localVal only syncs from the parent when the parent resets to ""
+//      (i.e. step change clears the field). This prevents a re-render loop
+//      where parent → child → parent → child kept bouncing.
+
+function FastInput({ value, onChange, className, type, placeholder }: {
+  value: string;
+  onChange: (val: string) => void;
+  className?: string;
+  type?: string;
+  placeholder?: string;
+}) {
+  const [localVal, setLocalVal] = useState(value);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Always keep the ref pointing at the latest onChange without deps.
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
+  // Only sync inward when the parent explicitly clears the field (e.g. step reset).
+  useEffect(() => {
+    if (value === "") setLocalVal("");
+  }, [value]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setLocalVal(val);
+    // Debounce: cancel any pending flush, then schedule a new one.
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      onChangeRef.current(val);
+    }, 200);
+  };
+
+  return (
+    <input
+      type={type}
+      className={className}
+      placeholder={placeholder}
+      value={localVal}
+      onChange={handleChange}
+      data-gramm="false"
+    />
+  );
+}
+
+function FastTextarea({ value, onChange, className, placeholder }: {
+  value: string;
+  onChange: (val: string) => void;
+  className?: string;
+  placeholder?: string;
+}) {
+  const [localVal, setLocalVal] = useState(value);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
+  useEffect(() => {
+    if (value === "") setLocalVal("");
+  }, [value]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = e.target.value;
+    setLocalVal(val);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      onChangeRef.current(val);
+    }, 200);
+  };
+
+  return (
+    <textarea
+      className={className}
+      placeholder={placeholder}
+      value={localVal}
+      onChange={handleChange}
+      data-gramm="false"
+    />
+  );
+}
+
 
 // --- HELPER COMPONENTS ---
 
@@ -400,8 +512,8 @@ function SelectButton({ icon, label, selected, onClick }: { icon?: React.ReactNo
     <button
       onClick={onClick}
       className={`relative w-full h-20 sm:h-24 flex items-center justify-center gap-4 px-6 rounded-xl border-2 transition-all duration-300 overflow-hidden group ${selected
-          ? "bg-gold border-gold text-primary-dark shadow-[0_0_30px_rgba(212,175,55,0.2)] scale-[1.02]"
-          : "bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-gold/50"
+        ? "bg-gold border-gold text-primary-dark shadow-[0_0_30px_rgba(212,175,55,0.2)] scale-[1.02]"
+        : "bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-gold/50"
         }`}
     >
       {icon && (
@@ -409,7 +521,7 @@ function SelectButton({ icon, label, selected, onClick }: { icon?: React.ReactNo
           {icon}
         </div>
       )}
-      <span className="font-display text-lg font-bold tracking-wide z-10">{label}</span>
+      <span className="font-display text-base sm:text-lg font-bold tracking-wide z-10">{label}</span>
 
       {/* Subtle hover effect background */}
       {!selected && <div className="absolute inset-0 bg-gradient-to-r from-gold/0 via-gold/5 to-gold/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />}
