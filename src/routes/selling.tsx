@@ -272,89 +272,13 @@ function InteractiveAppraisal() {
         )}
 
         {step === 5 && (
-          <StepContainer title="What best describes your property?" subtitle="Select an option or provide specific details below.">
+          <StepContainer title="What best describes your property?" subtitle="Select the current status, then add your details below.">
             <div className="w-full max-w-2xl flex flex-col gap-6">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <SelectButton icon={<Home size={20} />} label="Owner Occupied" selected={formData.propertyStatus === "Owner Occupied"} onClick={() => updateForm("propertyStatus", "Owner Occupied")} />
                 <SelectButton icon={<Users size={20} />} label="Tenanted" selected={formData.propertyStatus === "Tenanted"} onClick={() => updateForm("propertyStatus", "Tenanted")} />
                 <SelectButton icon={<Key size={20} />} label="Vacant" selected={formData.propertyStatus === "Vacant"} onClick={() => updateForm("propertyStatus", "Vacant")} />
               </div>
-              <div className="relative">
-                <FastTextarea
-                  className="w-full h-32 bg-white/5 border border-white/20 rounded-xl p-5 text-white placeholder:text-white/40 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all resize-none text-base"
-                  placeholder="Any recent renovations or additional details? (Optional)"
-                  value={formData.description}
-                  onChange={(val: string) => updateForm("description", val)}
-                />
-              </div>
-            </div>
-          </StepContainer>
-        )}
-
-        {step === 6 && (
-          <StepContainer title="Final details for your appraisal" subtitle="Where should we send your premium market estimation?">
-            <div className="w-full max-w-2xl bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 sm:p-8 text-left shadow-2xl">
-
-              <div className="mb-6">
-                <label className="block text-xs font-bold text-white/70 uppercase tracking-widest mb-2">Property Address <span className="text-gold">*</span></label>
-                <FastInput
-                  type="text"
-                  className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
-                  placeholder="Street address, suburb, postcode"
-                  value={formData.address}
-                  onChange={(val: string) => updateForm("address", val)}
-                />
-                <label className="flex items-center gap-3 mt-4 cursor-pointer group w-fit">
-                  <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.sameAddress ? 'bg-gold border-gold' : 'border-white/40 group-hover:border-gold'}`}>
-                    {formData.sameAddress && <Check size={14} className="text-primary-dark" />}
-                  </div>
-                  <span className="text-sm text-white/80 select-none">The address above is also my home address</span>
-                  <input type="checkbox" className="hidden" checked={formData.sameAddress} onChange={(e) => updateForm("sameAddress", e.target.checked)} />
-                </label>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
-                <div>
-                  <label className="block text-xs font-bold text-white/70 uppercase tracking-widest mb-2">First Name <span className="text-gold">*</span></label>
-                  <FastInput
-                    type="text"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
-                    value={formData.firstName}
-                    onChange={(val: string) => updateForm("firstName", val)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-white/70 uppercase tracking-widest mb-2">Last Name <span className="text-gold">*</span></label>
-                  <FastInput
-                    type="text"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
-                    value={formData.lastName}
-                    onChange={(val: string) => updateForm("lastName", val)}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-2">
-                <div>
-                  <label className="block text-xs font-bold text-white/70 uppercase tracking-widest mb-2">Email <span className="text-gold">*</span></label>
-                  <FastInput
-                    type="email"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
-                    value={formData.email}
-                    onChange={(val: string) => updateForm("email", val)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-white/70 uppercase tracking-widest mb-2">Phone <span className="text-gold">*</span></label>
-                  <FastInput
-                    type="tel"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
-                    value={formData.phone}
-                    onChange={(val: string) => updateForm("phone", val)}
-                  />
-                </div>
-              </div>
-
             </div>
           </StepContainer>
         )}
