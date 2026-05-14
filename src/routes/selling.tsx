@@ -75,7 +75,7 @@ import { ChevronRight, ChevronLeft, Check, Home, Building, MapPin, HelpCircle, A
 import { CtaBand } from "@/components/CtaBand";
 import { PropertyCard } from "@/components/PropertyCard";
 import { properties } from "@/data/properties";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import heroicResidence from "@/assets/emerald-twilight-residence.webp";
 
@@ -127,6 +127,8 @@ function SellingPage() {
         </div>
       </section>
 
+      <StandaloneAppraisalForm />
+
       {/* HOW WE SELL YOUR HOME */}
       <section className="py-20 md:py-32 bg-background">
         <div className="container mx-auto px-4 lg:px-8 max-w-5xl">
@@ -176,7 +178,7 @@ function SellingPage() {
 
 function InteractiveAppraisal() {
   const [step, setStep] = useState(1);
-  const totalSteps = 6;
+  const totalSteps = 5;
 
   // Form State
   const [formData, setFormData] = useState({
@@ -185,23 +187,18 @@ function InteractiveAppraisal() {
     priceRange: "",
     timeframe: "",
     propertyStatus: "",
-    description: "",
-    address: "",
-    sameAddress: false,
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
   });
 
-  // Stable callback — never recreated, so FastInput/FastTextarea never get
-  // a new function reference on every keystroke (which was causing re-renders).
+  // Stable callback — never recreated, keeping the selector steps lightweight.
   const updateForm = useCallback((key: keyof typeof formData, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   }, []);
 
   const nextStep = () => setStep((s) => Math.min(s + 1, totalSteps));
   const prevStep = () => setStep((s) => Math.max(s - 1, 1));
+  const goToContactDetails = () => {
+    document.getElementById("appraisal-details")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   // Validation
   const isNextEnabled = () => {
@@ -209,7 +206,7 @@ function InteractiveAppraisal() {
     if (step === 2) return formData.type !== "";
     if (step === 3) return formData.priceRange !== "";
     if (step === 4) return formData.timeframe !== "";
-    if (step === 5) return formData.propertyStatus !== "" || formData.description.trim() !== "";
+    if (step === 5) return formData.propertyStatus !== "";
     return true;
   };
 
@@ -274,89 +271,13 @@ function InteractiveAppraisal() {
         )}
 
         {step === 5 && (
-          <StepContainer title="What best describes your property?" subtitle="Select an option or provide specific details below.">
+          <StepContainer title="What best describes your property?" subtitle="Select the current status, then add your details below.">
             <div className="w-full max-w-2xl flex flex-col gap-6">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <SelectButton icon={<Home size={20} />} label="Owner Occupied" selected={formData.propertyStatus === "Owner Occupied"} onClick={() => updateForm("propertyStatus", "Owner Occupied")} />
                 <SelectButton icon={<Users size={20} />} label="Tenanted" selected={formData.propertyStatus === "Tenanted"} onClick={() => updateForm("propertyStatus", "Tenanted")} />
                 <SelectButton icon={<Key size={20} />} label="Vacant" selected={formData.propertyStatus === "Vacant"} onClick={() => updateForm("propertyStatus", "Vacant")} />
               </div>
-              <div className="relative">
-                <FastTextarea
-                  className="w-full h-32 bg-white/5 border border-white/20 rounded-xl p-5 text-white placeholder:text-white/40 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all resize-none text-base"
-                  placeholder="Any recent renovations or additional details? (Optional)"
-                  value={formData.description}
-                  onChange={(val: string) => updateForm("description", val)}
-                />
-              </div>
-            </div>
-          </StepContainer>
-        )}
-
-        {step === 6 && (
-          <StepContainer title="Final details for your appraisal" subtitle="Where should we send your premium market estimation?">
-            <div className="w-full max-w-2xl bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 sm:p-8 text-left shadow-2xl">
-
-              <div className="mb-6">
-                <label className="block text-xs font-bold text-white/70 uppercase tracking-widest mb-2">Property Address <span className="text-gold">*</span></label>
-                <FastInput
-                  type="text"
-                  className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
-                  placeholder="Street address, suburb, postcode"
-                  value={formData.address}
-                  onChange={(val: string) => updateForm("address", val)}
-                />
-                <label className="flex items-center gap-3 mt-4 cursor-pointer group w-fit">
-                  <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.sameAddress ? 'bg-gold border-gold' : 'border-white/40 group-hover:border-gold'}`}>
-                    {formData.sameAddress && <Check size={14} className="text-primary-dark" />}
-                  </div>
-                  <span className="text-sm text-white/80 select-none">The address above is also my home address</span>
-                  <input type="checkbox" className="hidden" checked={formData.sameAddress} onChange={(e) => updateForm("sameAddress", e.target.checked)} />
-                </label>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
-                <div>
-                  <label className="block text-xs font-bold text-white/70 uppercase tracking-widest mb-2">First Name <span className="text-gold">*</span></label>
-                  <FastInput
-                    type="text"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
-                    value={formData.firstName}
-                    onChange={(val: string) => updateForm("firstName", val)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-white/70 uppercase tracking-widest mb-2">Last Name <span className="text-gold">*</span></label>
-                  <FastInput
-                    type="text"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
-                    value={formData.lastName}
-                    onChange={(val: string) => updateForm("lastName", val)}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-2">
-                <div>
-                  <label className="block text-xs font-bold text-white/70 uppercase tracking-widest mb-2">Email <span className="text-gold">*</span></label>
-                  <FastInput
-                    type="email"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
-                    value={formData.email}
-                    onChange={(val: string) => updateForm("email", val)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-white/70 uppercase tracking-widest mb-2">Phone <span className="text-gold">*</span></label>
-                  <FastInput
-                    type="tel"
-                    className="w-full bg-white/10 border border-white/20 rounded-lg h-12 px-4 text-white focus:outline-none focus:border-gold transition-colors"
-                    value={formData.phone}
-                    onChange={(val: string) => updateForm("phone", val)}
-                  />
-                </div>
-              </div>
-
             </div>
           </StepContainer>
         )}
@@ -387,9 +308,10 @@ function InteractiveAppraisal() {
           </button>
         ) : (
           <button
+            onClick={goToContactDetails}
             className="inline-flex items-center gap-2 px-10 h-14 rounded-lg bg-gold text-primary-dark font-bold text-lg hover:bg-gold-shine hover:shadow-[0_0_30px_rgba(212,175,55,0.5)] hover:-translate-y-1 transition-all"
           >
-            Request Appraisal <Check size={20} />
+            Continue to details <Check size={20} />
           </button>
         )}
       </div>
@@ -399,46 +321,81 @@ function InteractiveAppraisal() {
 }
 
 
-// --- SIMPLE CONTROLLED INPUTS ---
-// Plain controlled inputs. The previous debounced wrappers caused typing
-// to feel stuck / lose focus because of the inward-sync useEffect.
+function StandaloneAppraisalForm() {
+  const [sameAddress, setSameAddress] = useState(false);
 
-function FastInput({ value, onChange, className, type, placeholder }: {
-  value: string;
-  onChange: (val: string) => void;
-  className?: string;
-  type?: string;
-  placeholder?: string;
-}) {
   return (
-    <input
-      type={type}
-      className={className}
-      placeholder={placeholder}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      data-gramm="false"
-    />
+    <section id="appraisal-details" className="scroll-mt-28 py-20 md:py-28 bg-secondary">
+      <div className="container mx-auto px-4 lg:px-8 max-w-5xl">
+        <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] items-start">
+          <div>
+            <p className="text-gold uppercase tracking-[0.3em] text-xs font-bold mb-4">Final Details</p>
+            <h2 className="font-display text-3xl md:text-5xl font-bold text-primary-dark text-balance">
+              Send your appraisal request
+            </h2>
+            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
+              Share the essential property details and our team will prepare a focused market estimate for you.
+            </p>
+          </div>
+
+          <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-elegant">
+            <div className="mb-6">
+              <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Property Address <span className="text-gold">*</span></label>
+              <input
+                type="text"
+                className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
+                placeholder="Street address, suburb, postcode"
+                data-gramm="false"
+              />
+              <label className="flex items-center gap-3 mt-4 cursor-pointer group w-fit">
+                <span className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${sameAddress ? "bg-gold border-gold" : "border-border group-hover:border-gold"}`}>
+                  {sameAddress && <Check size={14} className="text-primary-dark" />}
+                </span>
+                <span className="text-sm text-muted-foreground select-none">The address above is also my home address</span>
+                <input type="checkbox" className="hidden" checked={sameAddress} onChange={(e) => setSameAddress(e.target.checked)} />
+              </label>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+              <div>
+                <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">First Name <span className="text-gold">*</span></label>
+                <input type="text" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" data-gramm="false" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Last Name <span className="text-gold">*</span></label>
+                <input type="text" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" data-gramm="false" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+              <div>
+                <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Email <span className="text-gold">*</span></label>
+                <input type="email" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" data-gramm="false" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Phone <span className="text-gold">*</span></label>
+                <input type="tel" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" data-gramm="false" />
+              </div>
+            </div>
+
+            <div className="mb-7">
+              <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Additional details</label>
+              <textarea
+                className="w-full h-32 bg-background border border-border rounded-xl p-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all resize-none text-base"
+                placeholder="Any recent renovations or additional details? (Optional)"
+                data-gramm="false"
+              />
+            </div>
+
+            <button className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-8 h-13 rounded-lg bg-gold text-primary-dark font-bold hover:bg-gold-shine hover:shadow-gold hover:-translate-y-0.5 transition-all">
+              Request Appraisal <Check size={18} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
-
-function FastTextarea({ value, onChange, className, placeholder }: {
-  value: string;
-  onChange: (val: string) => void;
-  className?: string;
-  placeholder?: string;
-}) {
-  return (
-    <textarea
-      className={className}
-      placeholder={placeholder}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      data-gramm="false"
-    />
-  );
-}
-
 
 // --- HELPER COMPONENTS ---
 
