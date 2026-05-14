@@ -399,15 +399,9 @@ function InteractiveAppraisal() {
 }
 
 
-// --- PERFORMANCE OPTIMIZED INPUT COMPONENTS ---
-// Key fixes vs the original:
-//   1. No useEffect for debouncing — we use a ref-based timer in the onChange
-//      handler itself, so it never fires on mount or on unrelated re-renders.
-//   2. The onChange ref is assigned directly on each render (not inside a
-//      useEffect), which eliminates the stale-closure bug without extra deps.
-//   3. localVal only syncs from the parent when the parent resets to ""
-//      (i.e. step change clears the field). This prevents a re-render loop
-//      where parent → child → parent → child kept bouncing.
+// --- SIMPLE CONTROLLED INPUTS ---
+// Plain controlled inputs. The previous debounced wrappers caused typing
+// to feel stuck / lose focus because of the inward-sync useEffect.
 
 function FastInput({ value, onChange, className, type, placeholder }: {
   value: string;
@@ -416,35 +410,13 @@ function FastInput({ value, onChange, className, type, placeholder }: {
   type?: string;
   placeholder?: string;
 }) {
-  const [localVal, setLocalVal] = useState(value);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Always keep the ref pointing at the latest onChange without deps.
-  const onChangeRef = useRef(onChange);
-  onChangeRef.current = onChange;
-
-  // Only sync inward when the parent explicitly clears the field (e.g. step reset).
-  useEffect(() => {
-    if (value === "") setLocalVal("");
-  }, [value]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setLocalVal(val);
-    // Debounce: cancel any pending flush, then schedule a new one.
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      onChangeRef.current(val);
-    }, 200);
-  };
-
   return (
     <input
       type={type}
       className={className}
       placeholder={placeholder}
-      value={localVal}
-      onChange={handleChange}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
       data-gramm="false"
     />
   );
@@ -456,31 +428,12 @@ function FastTextarea({ value, onChange, className, placeholder }: {
   className?: string;
   placeholder?: string;
 }) {
-  const [localVal, setLocalVal] = useState(value);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const onChangeRef = useRef(onChange);
-  onChangeRef.current = onChange;
-
-  useEffect(() => {
-    if (value === "") setLocalVal("");
-  }, [value]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const val = e.target.value;
-    setLocalVal(val);
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      onChangeRef.current(val);
-    }, 200);
-  };
-
   return (
     <textarea
       className={className}
       placeholder={placeholder}
-      value={localVal}
-      onChange={handleChange}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
       data-gramm="false"
     />
   );
