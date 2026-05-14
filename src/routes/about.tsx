@@ -121,7 +121,7 @@ function AboutPage() {
                   With a career built on absolute discretion and record-breaking transactions, PHM Elite Estates was established by Harpreet Singh Kohli to serve a highly distinct echelon of the property market.
                 </p>
                 <p>
-                  Moving away from the volume-driven approach of traditional real estate franchises, Harpreet's vision was clear: to offer an intensely personalized, private brokerage service where the client's privacy, security, and financial outcome are the sole priorities.
+                  Moving away from the volume-driven approach of traditional real estate franchises, Harpreet's vision was clear: to offer an intensely personalized, real estate service where the client's privacy, security, and financial outcome are the sole priorities.
                 </p>
               </div>
 
