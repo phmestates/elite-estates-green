@@ -6,10 +6,10 @@ import { CtaBand } from "@/components/CtaBand";
 export const Route = createFileRoute("/buying")({
   head: () => ({
     meta: [
-      { title: "Buying — PHM Elite Estates" },
-      { name: "description", content: "Find your next home with PHM Elite Estates. Search local listings, get buyer guidance and trusted advice." },
-      { property: "og:title", content: "Buying with PHM Elite Estates" },
-      { property: "og:description", content: "Search local listings and get expert buying advice." },
+      { title: "Buying — PHM Elite Estates | House & Land Packages" },
+      { name: "description", content: "Browse house & land packages, dual key investments, and development opportunities across Queensland and Western Australia with PHM Elite Estates." },
+      { property: "og:title", content: "Buying — PHM Elite Estates" },
+      { property: "og:description", content: "House & land packages, dual key and development opportunities Australia-wide." },
     ],
   }),
   component: BuyingPage,
@@ -27,9 +27,9 @@ function BuyingPage() {
     <>
       <PageHero
         eyebrow="Buying"
-        title="Find a home you'll love coming back to"
-        subtitle="From first-home buyers to seasoned investors, our local expertise puts you ahead."
-        image="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1800&q=70"
+        title="Find your perfect House & Land package"
+        subtitle="Browse our curated portfolio of house & land packages, dual key investments, and development opportunities across QLD and WA."
+        image="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1800&q=70"
       />
 
       <section className="py-16 md:py-20">

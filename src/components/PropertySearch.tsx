@@ -1,114 +1,165 @@
 import { useState, useMemo } from "react";
-import { Search } from "lucide-react";
-import { properties, SUBURBS, type Property } from "@/data/properties";
+import { Search, SlidersHorizontal, X } from "lucide-react";
+import { properties, SUBURBS, CATEGORIES, type Property, type PropertyCategory } from "@/data/properties";
 import { PropertyCard } from "./PropertyCard";
+import EnquiryModal from "./EnquiryModal";
 
-const TYPES: Property["type"][] = ["House", "Unit", "Townhouse", "Villa", "Duplex"];
-const PRICES = [0, 250000, 500000, 750000, 1000000, 1500000, 2000000, 5000000];
+const BEDS_OPTIONS = [0, 1, 2, 3, 4, 5];
+const PRICE_FROM = [0, 500000, 750000, 900000, 1000000, 1200000, 1500000];
+const PRICE_TO = [0, 750000, 1000000, 1200000, 1500000, 2000000, 5000000];
 
-export function PropertySearch({ defaultStatus }: { defaultStatus?: Property["status"] }) {
-  const [suburb, setSuburb] = useState("");
-  const [type, setType] = useState("");
+function fmt(n: number) {
+  if (n === 0) return "Any";
+  return `$${(n / 1000).toFixed(0)}K`;
+}
+
+export function PropertySearch({
+  defaultStatus,
+  defaultSuburb,
+  showAll = false,
+}: {
+  defaultStatus?: Property["status"];
+  defaultSuburb?: string;
+  showAll?: boolean;
+}) {
+  const [suburb, setSuburb] = useState(defaultSuburb ?? "");
+  const [category, setCategory] = useState<PropertyCategory | "">("");
+  const [bedsMin, setBedsMin] = useState(0);
   const [priceFrom, setPriceFrom] = useState(0);
   const [priceTo, setPriceTo] = useState(0);
-  const [bedsMin, setBedsMin] = useState(0);
-  const [baths, setBaths] = useState(0);
-  const [airCon, setAirCon] = useState(false);
-  const [pool, setPool] = useState(false);
-  const [security, setSecurity] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [enquiryProp, setEnquiryProp] = useState<Property | null>(null);
 
   const results = useMemo(() => {
     return properties.filter((p) => {
       if (defaultStatus && p.status !== defaultStatus) return false;
-      if (suburb && p.suburb !== suburb) return false;
-      if (type && p.type !== type) return false;
-      if (priceFrom && p.price < priceFrom) return false;
-      if (priceTo && p.price > priceTo) return false;
+      if (suburb && !p.suburb.toLowerCase().includes(suburb.toLowerCase())) return false;
+      if (category && p.category !== category) return false;
       if (bedsMin && p.beds < bedsMin) return false;
-      if (baths && p.baths < baths) return false;
-      if (airCon && !p.features.airCon) return false;
-      if (pool && !p.features.pool) return false;
-      if (security && !p.features.security) return false;
+      if (priceFrom && p.price > 0 && p.price < priceFrom) return false;
+      if (priceTo && p.price > 0 && p.price > priceTo) return false;
       return true;
     });
-  }, [suburb, type, priceFrom, priceTo, bedsMin, baths, airCon, pool, security, defaultStatus]);
+  }, [suburb, category, bedsMin, priceFrom, priceTo, defaultStatus]);
+
+  const hasFilters = suburb || category || bedsMin || priceFrom || priceTo;
+
+  const clearAll = () => {
+    setSuburb(defaultSuburb ?? "");
+    setCategory("");
+    setBedsMin(0);
+    setPriceFrom(0);
+    setPriceTo(0);
+  };
 
   return (
     <div>
-      <form
-        onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}
-        className="bg-secondary border border-border rounded-lg p-5 md:p-6 grid gap-4 md:grid-cols-4"
-      >
-        <Field label="Suburb">
-          <select value={suburb} onChange={(e) => setSuburb(e.target.value)} className="select-base">
-            <option value="">Any</option>
-            {SUBURBS.map((s) => <option key={s} value={s}>{s}</option>)}
+      {/* Search Bar */}
+      <div className="bg-white rounded-2xl border border-border shadow-sm p-4 md:p-5 mb-4">
+        <div className="flex flex-col sm:flex-row gap-3">
+          {/* Suburb search */}
+          <div className="relative flex-1">
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
+              value={suburb}
+              onChange={(e) => setSuburb(e.target.value)}
+              placeholder="Search suburb or location..."
+              list="suburb-list"
+              className="w-full h-12 pl-11 pr-4 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors text-sm font-medium"
+            />
+            <datalist id="suburb-list">
+              {SUBURBS.map((s) => <option key={s} value={s} />)}
+            </datalist>
+          </div>
+
+          {/* Category */}
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value as PropertyCategory | "")}
+            className="h-12 px-4 bg-background border border-border rounded-xl text-foreground focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors text-sm font-medium min-w-[180px]"
+          >
+            <option value="">All Categories</option>
+            {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
-        </Field>
-        <Field label="House Category">
-          <select value={type} onChange={(e) => setType(e.target.value)} className="select-base">
-            <option value="">Any</option>
-            {TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-        </Field>
-        <Field label="Price From">
-          <select value={priceFrom} onChange={(e) => setPriceFrom(Number(e.target.value))} className="select-base">
-            <option value={0}>Any</option>
-            {PRICES.map((p) => <option key={p} value={p}>${p.toLocaleString()}</option>)}
-          </select>
-        </Field>
-        <Field label="Price To">
-          <select value={priceTo} onChange={(e) => setPriceTo(Number(e.target.value))} className="select-base">
-            <option value={0}>Any</option>
-            {PRICES.map((p) => <option key={p} value={p}>${p.toLocaleString()}</option>)}
-          </select>
-        </Field>
-        <Field label="Bedrooms Min">
-          <select value={bedsMin} onChange={(e) => setBedsMin(Number(e.target.value))} className="select-base">
-            <option value={0}>Any</option>
-            {[1,2,3,4,5,6].map((n) => <option key={n} value={n}>{n}+</option>)}
-          </select>
-        </Field>
-        <Field label="Bathrooms">
-          <select value={baths} onChange={(e) => setBaths(Number(e.target.value))} className="select-base">
-            <option value={0}>Any</option>
-            {[1,2,3,4].map((n) => <option key={n} value={n}>{n}+</option>)}
-          </select>
-        </Field>
-        <div className="md:col-span-2 flex flex-wrap items-end gap-4 text-sm">
-          <label className="flex items-center gap-2"><input type="checkbox" checked={airCon} onChange={(e) => setAirCon(e.target.checked)} className="accent-primary" />Air Conditioning</label>
-          <label className="flex items-center gap-2"><input type="checkbox" checked={pool} onChange={(e) => setPool(e.target.checked)} className="accent-primary" />Pool</label>
-          <label className="flex items-center gap-2"><input type="checkbox" checked={security} onChange={(e) => setSecurity(e.target.checked)} className="accent-primary" />Security</label>
+
+          {/* Toggle filters */}
+          <button
+            onClick={() => setShowFilters((v) => !v)}
+            className={`h-12 px-5 rounded-xl border text-sm font-semibold flex items-center gap-2 transition-all ${showFilters ? "bg-primary text-primary-foreground border-primary" : "border-border hover:border-primary text-foreground/70 hover:text-primary-dark"}`}
+          >
+            <SlidersHorizontal size={16} />
+            Filters
+          </button>
         </div>
-        <button type="submit" className="md:col-span-4 inline-flex items-center justify-center gap-2 bg-gold text-gold-foreground font-bold uppercase tracking-wider py-3 rounded hover:brightness-95 transition">
-          <Search size={18} /> Search Properties
-        </button>
-      </form>
 
-      <style>{`.select-base{width:100%;height:42px;padding:0 12px;border:1px solid var(--border);background:white;border-radius:6px;color:var(--ink);font-size:14px}`}</style>
-
-      {(submitted || defaultStatus) && (
-        <div className="mt-8">
-          <p className="text-sm text-muted-foreground mb-4">{results.length} {results.length === 1 ? "property" : "properties"} found</p>
-          {results.length > 0 ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {results.map((p) => <PropertyCard key={p.id} p={p} />)}
+        {/* Expanded Filters */}
+        {showFilters && (
+          <div className="mt-4 pt-4 border-t border-border grid grid-cols-2 md:grid-cols-4 gap-4 animate-in fade-in duration-300">
+            <div>
+              <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Min Bedrooms</label>
+              <select value={bedsMin} onChange={(e) => setBedsMin(Number(e.target.value))} className="w-full h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold transition-colors">
+                {BEDS_OPTIONS.map((n) => <option key={n} value={n}>{n === 0 ? "Any" : `${n}+`}</option>)}
+              </select>
             </div>
-          ) : (
-            <div className="text-center py-12 text-muted-foreground bg-muted rounded-lg">No properties match your filters. Try widening your search.</div>
-          )}
+            <div>
+              <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Price From</label>
+              <select value={priceFrom} onChange={(e) => setPriceFrom(Number(e.target.value))} className="w-full h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold transition-colors">
+                {PRICE_FROM.map((p) => <option key={p} value={p}>{fmt(p)}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Price To</label>
+              <select value={priceTo} onChange={(e) => setPriceTo(Number(e.target.value))} className="w-full h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold transition-colors">
+                {PRICE_TO.map((p) => <option key={p} value={p}>{fmt(p)}</option>)}
+              </select>
+            </div>
+            <div className="flex items-end">
+              {hasFilters && (
+                <button onClick={clearAll} className="w-full h-11 px-4 rounded-lg border border-border text-sm font-semibold text-muted-foreground hover:text-destructive hover:border-destructive flex items-center justify-center gap-2 transition-colors">
+                  <X size={14} /> Clear filters
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Results count */}
+      <div className="flex items-center justify-between mb-6">
+        <p className="text-sm text-muted-foreground">
+          <span className="font-bold text-primary-dark">{results.length}</span> {results.length === 1 ? "property" : "properties"} found
+          {suburb && <span className="ml-1">in <span className="font-semibold text-primary-dark">{suburb}</span></span>}
+        </p>
+        {hasFilters && (
+          <button onClick={clearAll} className="text-xs text-muted-foreground hover:text-gold transition-colors flex items-center gap-1">
+            <X size={12} /> Clear all
+          </button>
+        )}
+      </div>
+
+      {/* Grid */}
+      {results.length > 0 ? (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {results.map((p) => (
+            <PropertyCard key={p.id} p={p} onEnquire={setEnquiryProp} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-16 text-muted-foreground bg-secondary rounded-2xl border border-border">
+          <div className="text-4xl mb-4">🏡</div>
+          <p className="font-display font-bold text-xl text-primary-dark mb-2">No properties found</p>
+          <p className="text-sm">Try adjusting your filters or clearing your search.</p>
+          <button onClick={clearAll} className="mt-6 px-6 h-10 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary-dark transition-colors">
+            Clear filters
+          </button>
         </div>
       )}
-    </div>
-  );
-}
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <span className="block text-xs font-semibold uppercase tracking-wider text-primary-dark mb-1.5">{label}</span>
-      {children}
-    </label>
+      {/* Enquiry Modal */}
+      {enquiryProp && (
+        <EnquiryModal property={enquiryProp} onClose={() => setEnquiryProp(null)} />
+      )}
+    </div>
   );
 }

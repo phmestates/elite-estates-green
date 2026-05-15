@@ -69,7 +69,7 @@ function AboutPage() {
             transition={{ duration: 1, delay: 0.45 }}
             className="mt-8 max-w-2xl text-base md:text-lg text-foreground/75 font-light leading-relaxed"
           >
-            Founded on a single conviction — that the most distinguished transactions are those never publicly seen — PHM Elite Estates curates a small, considered portfolio across Sydney and Melbourne.
+            Founded on a single conviction — that the most distinguished transactions are those never publicly seen — PHM Elite Estates curates a small, considered portfolio across Brisbane and Australia-Wide.
           </motion.p>
         </div>
       </section>

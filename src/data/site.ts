@@ -10,7 +10,7 @@ export const site = {
   phone2Href: "tel:+61434996060",
   email: "admin@phmestates.com",
   address: "Virtual Office — Australia-Wide",
-  addressDetail: "Servicing Sydney, Melbourne & beyond",
+  addressDetail: "Servicing Brisbane & beyond",
   hours: "Mon–Fri 8:30am – 6:00pm · Sat 9:00am – 4:00pm",
   socials: {
     facebook: "https://facebook.com",
@@ -28,5 +28,6 @@ export const navItems = [
   { to: "/property", label: "Property" },
   { to: "/blog", label: "Blog" },
   { to: "/about", label: "About" },
+  { to: "/reviews", label: "Reviews" },
   { to: "/contact", label: "Contact" },
 ] as const;

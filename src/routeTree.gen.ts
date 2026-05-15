@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SellingRouteImport } from './routes/selling'
+import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as RentingRouteImport } from './routes/renting'
 import { Route as PropertyRouteImport } from './routes/property'
 import { Route as FinanceRouteImport } from './routes/finance'
@@ -18,10 +19,16 @@ import { Route as BuyingRouteImport } from './routes/buying'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PropertyIdRouteImport } from './routes/property.$id'
 
 const SellingRoute = SellingRouteImport.update({
   id: '/selling',
   path: '/selling',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewsRoute = ReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RentingRoute = RentingRouteImport.update({
@@ -64,6 +71,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PropertyIdRoute = PropertyIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => PropertyRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -72,9 +84,11 @@ export interface FileRoutesByFullPath {
   '/buying': typeof BuyingRoute
   '/contact': typeof ContactRoute
   '/finance': typeof FinanceRoute
-  '/property': typeof PropertyRoute
+  '/property': typeof PropertyRouteWithChildren
   '/renting': typeof RentingRoute
+  '/reviews': typeof ReviewsRoute
   '/selling': typeof SellingRoute
+  '/property/$id': typeof PropertyIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -83,9 +97,11 @@ export interface FileRoutesByTo {
   '/buying': typeof BuyingRoute
   '/contact': typeof ContactRoute
   '/finance': typeof FinanceRoute
-  '/property': typeof PropertyRoute
+  '/property': typeof PropertyRouteWithChildren
   '/renting': typeof RentingRoute
+  '/reviews': typeof ReviewsRoute
   '/selling': typeof SellingRoute
+  '/property/$id': typeof PropertyIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -95,9 +111,11 @@ export interface FileRoutesById {
   '/buying': typeof BuyingRoute
   '/contact': typeof ContactRoute
   '/finance': typeof FinanceRoute
-  '/property': typeof PropertyRoute
+  '/property': typeof PropertyRouteWithChildren
   '/renting': typeof RentingRoute
+  '/reviews': typeof ReviewsRoute
   '/selling': typeof SellingRoute
+  '/property/$id': typeof PropertyIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -110,7 +128,9 @@ export interface FileRouteTypes {
     | '/finance'
     | '/property'
     | '/renting'
+    | '/reviews'
     | '/selling'
+    | '/property/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -121,7 +141,9 @@ export interface FileRouteTypes {
     | '/finance'
     | '/property'
     | '/renting'
+    | '/reviews'
     | '/selling'
+    | '/property/$id'
   id:
     | '__root__'
     | '/'
@@ -132,7 +154,9 @@ export interface FileRouteTypes {
     | '/finance'
     | '/property'
     | '/renting'
+    | '/reviews'
     | '/selling'
+    | '/property/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -142,8 +166,9 @@ export interface RootRouteChildren {
   BuyingRoute: typeof BuyingRoute
   ContactRoute: typeof ContactRoute
   FinanceRoute: typeof FinanceRoute
-  PropertyRoute: typeof PropertyRoute
+  PropertyRoute: typeof PropertyRouteWithChildren
   RentingRoute: typeof RentingRoute
+  ReviewsRoute: typeof ReviewsRoute
   SellingRoute: typeof SellingRoute
 }
 
@@ -154,6 +179,13 @@ declare module '@tanstack/react-router' {
       path: '/selling'
       fullPath: '/selling'
       preLoaderRoute: typeof SellingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviews': {
+      id: '/reviews'
+      path: '/reviews'
+      fullPath: '/reviews'
+      preLoaderRoute: typeof ReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/renting': {
@@ -212,8 +244,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/property/$id': {
+      id: '/property/$id'
+      path: '/$id'
+      fullPath: '/property/$id'
+      preLoaderRoute: typeof PropertyIdRouteImport
+      parentRoute: typeof PropertyRoute
+    }
   }
 }
+
+interface PropertyRouteChildren {
+  PropertyIdRoute: typeof PropertyIdRoute
+}
+
+const PropertyRouteChildren: PropertyRouteChildren = {
+  PropertyIdRoute: PropertyIdRoute,
+}
+
+const PropertyRouteWithChildren = PropertyRoute._addFileChildren(
+  PropertyRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -222,8 +273,9 @@ const rootRouteChildren: RootRouteChildren = {
   BuyingRoute: BuyingRoute,
   ContactRoute: ContactRoute,
   FinanceRoute: FinanceRoute,
-  PropertyRoute: PropertyRoute,
+  PropertyRoute: PropertyRouteWithChildren,
   RentingRoute: RentingRoute,
+  ReviewsRoute: ReviewsRoute,
   SellingRoute: SellingRoute,
 }
 export const routeTree = rootRouteImport
