@@ -76,14 +76,13 @@ function HomePage() {
             </h1>
 
             <p className="text-white/80 text-base md:text-lg lg:text-xl font-light max-w-xl border-l-[3px] border-gold/40 pl-6 mb-10 leading-relaxed">
-              Specialising in house & land packages, dual key investments and development opportunities across QLD and WA.
+              Representing Australia's most considered homes — pairing deep local knowledge with the discretion and craft of a real estate leader.
             </p>
 
             <div className="flex flex-wrap gap-6">
               {[
                 { value: `${properties.length}`, label: "Active Listings" },
                 { value: "Australia-wide", label: "Coverage" },
-                { value: "4", label: "Categories" },
               ].map((stat) => (
                 <div key={stat.label}>
                   <div className="font-display text-2xl font-bold text-gold">{stat.value}</div>
@@ -134,7 +133,7 @@ function HomePage() {
       {/* FEATURE CARDS */}
       <section className="py-16 md:py-24 bg-secondary">
         <div className="container mx-auto px-4 grid gap-6 md:grid-cols-3">
-          <FeatureCard icon={<Search size={28} />} title="Interested in Buying?" body="Browse house & land packages, dual key, and development opportunities across QLD and WA." link={{ to: "/buying", label: "Start searching" }} />
+          <FeatureCard icon={<Search size={28} />} title="Interested in Buying?" body="Browse house & land packages, dual key, and development opportunities across Australia." link={{ to: "/buying", label: "Start searching" }} />
           <FeatureCard icon={<Landmark size={28} />} title="Finance Your Property" body="Explore tailored finance options with our specialist. From first home to investment — we find the right fit." link={{ to: "/finance", label: "Explore finance" }} />
           <FeatureCard icon={<Mail size={28} />} title="Receive Email Alerts" body="Be the first to know about new listings that match your search criteria." link={{ to: "/contact", label: "Subscribe now" }} />
         </div>

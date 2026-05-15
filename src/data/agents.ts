@@ -1,3 +1,6 @@
+import harpreetImg from "@/assets/harpreetsirgreen.jpeg";
+import salesconsultant from "@/assets/salesconsultant.jpeg";
+
 export type Agent = {
   name: string;
   role: string;
@@ -16,17 +19,17 @@ export const agents: Agent[] = [
     role: "Principal & Director",
     phone: "+61 424 148 407",
     phoneHref: "tel:+61424148407",
-    email: "director@phmestates.com",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=70",
+    email: "admin@phmestates.com",
+    image: harpreetImg,
     bio: "Founder of PHM Elite Estates, with a career built on absolute discretion and record-breaking transactions.",
   },
   {
-    name: "Priya H. Mehta",
+    name: "",
     role: "Senior Sales Consultant",
     phone: "+61 434 996 060",
     phoneHref: "tel:+61434996060",
     email: "priya@phmestates.com",
-    image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=70",
+    image: salesconsultant,
     bio: "Specialist in premium residential sales across Brisbane and Australia-Wide with deep buyer network access.",
   },
   {

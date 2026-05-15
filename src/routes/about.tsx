@@ -4,7 +4,7 @@ import { CtaBand } from "@/components/CtaBand";
 import { Mail, Phone } from "lucide-react";
 import { agents } from "@/data/agents";
 import { site } from "@/data/site";
-import founderpic from "@/assets/harpreetsir.jpeg";
+import founderpic from "@/assets/harpreetsirgreen.jpeg";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -160,7 +160,7 @@ function AboutPage() {
             {/* Founder Portrait - Right Side */}
             <div className="lg:col-span-6 order-1 lg:order-2 relative group">
               <div className="aspect-[4/5] overflow-hidden rounded-sm relative shadow-2xl">
-                <div className="absolute inset-0 bg-primary-dark/20 group-hover:bg-transparent transition-colors duration-700 z-10" />
+                <div className="absolute inset-0  group-hover:bg-transparent transition-colors duration-700 z-10" />
                 <img
                   src={founderpic}
                   alt="Harpreet Singh Kohli"
