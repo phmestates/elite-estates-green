@@ -1,14 +1,32 @@
 import { useState } from "react";
-import { X, Phone, Check, MapPin, Bed, Bath, Car } from "lucide-react";
+import { X, Phone, Check, MapPin, Bed, Bath, Car, Loader2 } from "lucide-react";
 import type { Property } from "@/data/properties";
 import { site } from "@/data/site";
+import { submitLeadForm } from "@/lib/api";
 
 export default function EnquiryModal({ property: p, onClose }: { property: Property; onClose: () => void }) {
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const payload = {
+      propertyId: p.id,
+      propertyAddress: `${p.suburb}, ${p.state}`,
+      ...Object.fromEntries(formData.entries()),
+    };
+
+    try {
+      await submitLeadForm({ formType: "Property Enquiry", payload });
+      setSubmitted(true);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -74,28 +92,28 @@ export default function EnquiryModal({ property: p, onClose }: { property: Prope
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-1.5">First Name *</label>
-                  <input required type="text" className="w-full h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" />
+                  <input required name="firstName" type="text" className="w-full h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-1.5">Last Name *</label>
-                  <input required type="text" className="w-full h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" />
+                  <input required name="lastName" type="text" className="w-full h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" />
                 </div>
               </div>
               <div>
                 <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-1.5">Email *</label>
-                <input required type="email" className="w-full h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" />
+                <input required name="email" type="email" className="w-full h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" />
               </div>
               <div>
                 <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-1.5">Phone *</label>
-                <input required type="tel" className="w-full h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" />
+                <input required name="phone" type="tel" className="w-full h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors" />
               </div>
               <div>
                 <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-1.5">Message</label>
-                <textarea rows={3} placeholder="Any questions about this property? (Optional)" className="w-full px-3 py-2.5 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all resize-none" />
+                <textarea name="message" rows={3} placeholder="Any questions about this property? (Optional)" className="w-full px-3 py-2.5 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all resize-none" />
               </div>
               <div className="flex gap-3">
-                <button type="submit" className="flex-1 h-12 rounded-xl bg-gold text-primary-dark font-bold text-sm hover:bg-gold-shine hover:-translate-y-0.5 hover:shadow-gold transition-all">
-                  Send Enquiry
+                <button type="submit" disabled={isSubmitting} className="flex-1 h-12 flex items-center justify-center gap-2 rounded-xl bg-gold text-primary-dark font-bold text-sm hover:bg-gold-shine hover:-translate-y-0.5 hover:shadow-gold transition-all disabled:opacity-70 disabled:cursor-not-allowed">
+                  {isSubmitting ? <><Loader2 size={16} className="animate-spin" /> Sending...</> : "Send Enquiry"}
                 </button>
                 <button type="button" onClick={onClose} className="h-12 px-5 rounded-xl border border-border text-sm font-medium text-muted-foreground hover:bg-secondary transition-colors">
                   Cancel

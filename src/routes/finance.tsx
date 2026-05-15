@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
   ChevronRight, ChevronLeft, Check, Home, Building, MapPin,
-  TrendingUp, Wallet, RefreshCw, DollarSign, Calendar, ArrowRight
+  TrendingUp, Wallet, RefreshCw, DollarSign, Calendar, ArrowRight, Loader2
 } from "lucide-react";
 import { CtaBand } from "@/components/CtaBand";
 import React, { useState, useEffect, useCallback } from "react";
+import { submitLeadForm } from "@/lib/api";
 import heroicResidence from "@/assets/emerald-twilight-residence.webp";
 
 export const Route = createFileRoute("/finance")({
@@ -44,10 +45,15 @@ const WHY_ITEMS = [
 
 function FinancePage() {
   const [loaded, setLoaded] = useState(false);
+  useEffect(() => setLoaded(true), []);
 
-  useEffect(() => {
-    setLoaded(true);
-  }, []);
+  const [financeData, setFinanceData] = useState({
+    propertyType: "",
+    purpose: "",
+    financeAmount: "",
+    deposit: "",
+    timeframe: "",
+  });
 
   return (
     <>
@@ -66,12 +72,12 @@ function FinancePage() {
 
         {/* Content */}
         <div className="relative z-20 container mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col items-center">
-          <InteractiveFinanceForm />
+          <InteractiveFinanceForm data={financeData} onChange={setFinanceData} />
         </div>
       </section>
 
       {/* FINANCE DETAILS FORM */}
-      <FinanceContactForm />
+      <FinanceContactForm financeData={financeData} />
 
       {/* WHY CHOOSE PHM FINANCE */}
       <section className="py-20 md:py-32 bg-background">
@@ -108,21 +114,38 @@ function FinancePage() {
 
 // ─── INTERACTIVE FINANCE FORM ─────────────────────────────────────────────────
 
-function InteractiveFinanceForm() {
+function StepContainer({ title, subtitle, children }: { title: string, subtitle?: string, children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500 w-full">
+      <h2 className="font-display text-2xl md:text-3xl font-bold text-white mb-2">{title}</h2>
+      {subtitle && <p className="text-white/70 mb-8">{subtitle}</p>}
+      {children}
+    </div>
+  );
+}
+
+function SelectButton({ icon, label, selected, onClick }: { icon: React.ReactNode, label: string, selected: boolean, onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex flex-col items-center justify-center gap-3 p-6 rounded-xl border transition-all duration-300 ${selected
+        ? "bg-gold text-primary-dark border-gold shadow-lg"
+        : "bg-white/5 border-white/10 text-white hover:bg-white/10"
+        }`}
+    >
+      <div className={selected ? "text-primary-dark" : "text-gold"}>{icon}</div>
+      <span className="font-semibold text-sm">{label}</span>
+    </button>
+  );
+}
+
+function InteractiveFinanceForm({ data, onChange }: { data: any, onChange: (data: any) => void }) {
   const [step, setStep] = useState(1);
   const totalSteps = 5;
 
-  const [formData, setFormData] = useState({
-    propertyType: "",
-    purpose: "",
-    financeAmount: "",
-    deposit: "",
-    timeframe: "",
-  });
-
-  const updateForm = useCallback((key: keyof typeof formData, value: string) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
-  }, []);
+  const updateForm = useCallback((key: string, value: string) => {
+    onChange((prev: any) => ({ ...prev, [key]: value }));
+  }, [onChange]);
 
   const nextStep = () => setStep((s) => Math.min(s + 1, totalSteps));
   const prevStep = () => setStep((s) => Math.max(s - 1, 1));
@@ -132,11 +155,11 @@ function InteractiveFinanceForm() {
   };
 
   const isNextEnabled = () => {
-    if (step === 1) return formData.propertyType !== "";
-    if (step === 2) return formData.purpose !== "";
-    if (step === 3) return formData.financeAmount !== "";
-    if (step === 4) return formData.deposit !== "";
-    if (step === 5) return formData.timeframe !== "";
+    if (step === 1) return data.propertyType !== "";
+    if (step === 2) return data.purpose !== "";
+    if (step === 3) return data.financeAmount !== "";
+    if (step === 4) return data.deposit !== "";
+    if (step === 5) return data.timeframe !== "";
     return true;
   };
 
@@ -161,12 +184,12 @@ function InteractiveFinanceForm() {
       <div className="w-full relative min-h-[440px] flex flex-col items-center justify-center">
 
         {step === 1 && (
-          <StepContainer title="What type of property interests you?" subtitle="Tell us about your property goals.">
+          <StepContainer title="What type of property are you looking to finance?">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
-              <SelectButton icon={<Home size={24} />} label="House" selected={formData.propertyType === "House"} onClick={() => updateForm("propertyType", "House")} />
-              <SelectButton icon={<Building size={24} />} label="Unit / Apartment" selected={formData.propertyType === "Unit"} onClick={() => updateForm("propertyType", "Unit")} />
-              <SelectButton icon={<MapPin size={24} />} label="Townhouse / Villa" selected={formData.propertyType === "Townhouse"} onClick={() => updateForm("propertyType", "Townhouse")} />
-              <SelectButton icon={<TrendingUp size={24} />} label="Commercial" selected={formData.propertyType === "Commercial"} onClick={() => updateForm("propertyType", "Commercial")} />
+              <SelectButton icon={<Home size={24} />} label="House" selected={data.propertyType === "House"} onClick={() => updateForm("propertyType", "House")} />
+              <SelectButton icon={<Building size={24} />} label="Apartment / Unit" selected={data.propertyType === "Apartment"} onClick={() => updateForm("propertyType", "Apartment")} />
+              <SelectButton icon={<MapPin size={24} />} label="Land" selected={data.propertyType === "Land"} onClick={() => updateForm("propertyType", "Land")} />
+              <SelectButton icon={<RefreshCw size={24} />} label="Other / Unsure" selected={data.propertyType === "Other"} onClick={() => updateForm("propertyType", "Other")} />
             </div>
           </StepContainer>
         )}
@@ -174,9 +197,9 @@ function InteractiveFinanceForm() {
         {step === 2 && (
           <StepContainer title="What is the purpose of your finance?">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-2xl">
-              <SelectButton icon={<Home size={24} />} label="Buy to Live In" selected={formData.purpose === "Owner-Occupier"} onClick={() => updateForm("purpose", "Owner-Occupier")} />
-              <SelectButton icon={<TrendingUp size={24} />} label="Investment Property" selected={formData.purpose === "Investment"} onClick={() => updateForm("purpose", "Investment")} />
-              <SelectButton icon={<RefreshCw size={24} />} label="Refinance" selected={formData.purpose === "Refinance"} onClick={() => updateForm("purpose", "Refinance")} />
+              <SelectButton icon={<Home size={24} />} label="Buy to Live In" selected={data.purpose === "Owner-Occupier"} onClick={() => updateForm("purpose", "Owner-Occupier")} />
+              <SelectButton icon={<TrendingUp size={24} />} label="Investment Property" selected={data.purpose === "Investment"} onClick={() => updateForm("purpose", "Investment")} />
+              <SelectButton icon={<RefreshCw size={24} />} label="Refinance" selected={data.purpose === "Refinance"} onClick={() => updateForm("purpose", "Refinance")} />
             </div>
           </StepContainer>
         )}
@@ -185,7 +208,7 @@ function InteractiveFinanceForm() {
           <StepContainer title="How much are you looking to finance?">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
               {["Under $500K", "$500K – $1M", "$1M – $2.5M", "$2.5M – $5M", "Above $5M"].map((range) => (
-                <SelectButton key={range} icon={<DollarSign size={20} />} label={range} selected={formData.financeAmount === range} onClick={() => updateForm("financeAmount", range)} />
+                <SelectButton key={range} icon={<DollarSign size={20} />} label={range} selected={data.financeAmount === range} onClick={() => updateForm("financeAmount", range)} />
               ))}
             </div>
           </StepContainer>
@@ -195,7 +218,7 @@ function InteractiveFinanceForm() {
           <StepContainer title="What deposit or equity do you have?">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
               {["Under 10%", "10% – 20%", "20% – 40%", "40% or more"].map((dep) => (
-                <SelectButton key={dep} icon={<Wallet size={20} />} label={dep} selected={formData.deposit === dep} onClick={() => updateForm("deposit", dep)} />
+                <SelectButton key={dep} icon={<Wallet size={20} />} label={dep} selected={data.deposit === dep} onClick={() => updateForm("deposit", dep)} />
               ))}
             </div>
           </StepContainer>
@@ -205,7 +228,7 @@ function InteractiveFinanceForm() {
           <StepContainer title="When are you looking to move?" subtitle="Select your timeframe and we'll connect you with a specialist.">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
               {["Ready now", "Within 1–3 months", "Within 3–6 months", "Within 6–12 months"].map((time) => (
-                <SelectButton key={time} icon={<Calendar size={20} />} label={time} selected={formData.timeframe === time} onClick={() => updateForm("timeframe", time)} />
+                <SelectButton key={time} icon={<Calendar size={20} />} label={time} selected={data.timeframe === time} onClick={() => updateForm("timeframe", time)} />
               ))}
             </div>
           </StepContainer>
@@ -255,12 +278,28 @@ function InteractiveFinanceForm() {
 
 // ─── FINANCE CONTACT FORM ─────────────────────────────────────────────────────
 
-function FinanceContactForm() {
+function FinanceContactForm({ financeData }: { financeData: any }) {
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const contactData = Object.fromEntries(formData.entries());
+
+    try {
+      await submitLeadForm({
+        formType: "Finance",
+        payload: { ...financeData, ...contactData },
+      });
+      setSubmitted(true);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -313,6 +352,7 @@ function FinanceContactForm() {
                       First Name <span className="text-gold">*</span>
                     </label>
                     <input
+                      name="firstName"
                       type="text"
                       required
                       className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
@@ -323,6 +363,7 @@ function FinanceContactForm() {
                       Last Name <span className="text-gold">*</span>
                     </label>
                     <input
+                      name="lastName"
                       type="text"
                       required
                       className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
@@ -336,6 +377,7 @@ function FinanceContactForm() {
                       Email <span className="text-gold">*</span>
                     </label>
                     <input
+                      name="email"
                       type="email"
                       required
                       className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
@@ -346,6 +388,7 @@ function FinanceContactForm() {
                       Phone <span className="text-gold">*</span>
                     </label>
                     <input
+                      name="phone"
                       type="tel"
                       required
                       className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
@@ -358,6 +401,7 @@ function FinanceContactForm() {
                     Property or Finance Interest
                   </label>
                   <input
+                    name="interest"
                     type="text"
                     placeholder="e.g. Buying a house in Sydney, refinancing current mortgage"
                     className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
@@ -369,6 +413,7 @@ function FinanceContactForm() {
                     Additional Details
                   </label>
                   <textarea
+                    name="details"
                     rows={4}
                     placeholder="Any additional context about your finance needs... (Optional)"
                     className="w-full bg-background border border-border rounded-xl p-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all resize-none text-base"
@@ -377,9 +422,10 @@ function FinanceContactForm() {
 
                 <button
                   type="submit"
-                  className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-10 h-14 rounded-lg bg-gold text-primary-dark font-bold text-base hover:bg-gold-shine hover:shadow-gold hover:-translate-y-0.5 transition-all"
+                  disabled={isSubmitting}
+                  className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-10 h-14 rounded-lg bg-gold text-primary-dark font-bold text-base hover:bg-gold-shine hover:shadow-gold hover:-translate-y-0.5 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  Submit Enquiry <ArrowRight size={18} />
+                  {isSubmitting ? <><Loader2 size={18} className="animate-spin" /> Submitting...</> : <>Submit Enquiry <ArrowRight size={18} /></>}
                 </button>
               </form>
             )}
@@ -390,42 +436,4 @@ function FinanceContactForm() {
   );
 }
 
-// ─── HELPER COMPONENTS ────────────────────────────────────────────────────────
-
-function StepContainer({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
-  return (
-    <div className="w-full flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 lg:mb-6 tracking-tight text-balance">
-        {title}
-      </h2>
-      {subtitle && (
-        <p className="text-white/70 text-base sm:text-lg mb-8 max-w-xl text-balance">
-          {subtitle}
-        </p>
-      )}
-      <div className={!subtitle ? "mt-4 lg:mt-8 w-full flex justify-center" : "w-full flex justify-center"}>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function SelectButton({ icon, label, selected, onClick }: { icon?: React.ReactNode; label: string; selected: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`relative w-full h-20 sm:h-24 flex items-center justify-center gap-4 px-6 rounded-xl border-2 transition-all duration-300 overflow-hidden group ${selected
-        ? "bg-gold border-gold text-primary-dark shadow-[0_0_30px_rgba(212,175,55,0.2)] scale-[1.02]"
-        : "bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-gold/50"
-        }`}
-    >
-      {icon && (
-        <div className={`transition-colors duration-300 ${selected ? "text-primary-dark" : "text-gold"}`}>
-          {icon}
-        </div>
-      )}
-      <span className="font-display text-base sm:text-lg font-bold tracking-wide z-10">{label}</span>
-      {!selected && <div className="absolute inset-0 bg-gradient-to-r from-gold/0 via-gold/5 to-gold/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />}
-    </button>
-  );
-}
+// ─── END ────────────────────────────────────────────────────────────────────

@@ -1,14 +1,15 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { properties } from "@/data/properties";
 import { CtaBand } from "@/components/CtaBand";
 import { site } from "@/data/site";
 import {
   Bed, Bath, Car, MapPin, Maximize2, Check, Phone, Mail,
-  ArrowLeft, ChevronRight, Home, Share2, ArrowRight, X, ChevronLeft, Image
+  ArrowLeft, ChevronRight, Home, Share2, ArrowRight, X, ChevronLeft, Image, Loader2
 } from "lucide-react";
 import { useState } from "react";
 import { PropertyCard } from "@/components/PropertyCard";
 import type { Property } from "@/data/properties";
+import { submitLeadForm } from "@/lib/api";
 
 export const Route = createFileRoute("/property/$id")({
   component: PropertyDetailPage,
@@ -237,6 +238,29 @@ function PropertyGallery({ images, title }: { images: string[]; title: string })
 
 function EnquiryForm({ property: p }: { property: Property }) {
   const [done, setDone] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const payload = {
+      propertyId: p.id,
+      propertyAddress: `${p.suburb}, ${p.state}`,
+      ...Object.fromEntries(formData.entries()),
+    };
+
+    try {
+      await submitLeadForm({ formType: "Property Enquiry", payload });
+      setDone(true);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
       <h3 className="font-display font-bold text-xl text-primary-dark mb-1">Enquire now</h3>
@@ -248,16 +272,16 @@ function EnquiryForm({ property: p }: { property: Property }) {
           <p className="text-sm text-muted-foreground">Our agent will be in touch shortly.</p>
         </div>
       ) : (
-        <form onSubmit={(e) => { e.preventDefault(); setDone(true); }} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <input required type="text" placeholder="First name" className="h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold transition-colors w-full" />
-            <input required type="text" placeholder="Last name" className="h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold transition-colors w-full" />
+            <input required name="firstName" type="text" placeholder="First name" className="h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold transition-colors w-full" />
+            <input required name="lastName" type="text" placeholder="Last name" className="h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold transition-colors w-full" />
           </div>
-          <input required type="email" placeholder="Email address" className="w-full h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold transition-colors" />
-          <input required type="tel" placeholder="Phone number" className="w-full h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold transition-colors" />
-          <textarea rows={3} defaultValue={`I am interested in: ${p.title}`} className="w-full px-3 py-2.5 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold transition-all resize-none" />
-          <button type="submit" className="w-full h-12 rounded-xl bg-gold text-primary-dark font-bold text-sm hover:bg-gold-shine hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
-            Send Enquiry <ArrowRight size={15} />
+          <input required name="email" type="email" placeholder="Email address" className="w-full h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold transition-colors" />
+          <input required name="phone" type="tel" placeholder="Phone number" className="w-full h-11 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold transition-colors" />
+          <textarea name="message" rows={3} defaultValue={`I am interested in: ${p.title}`} className="w-full px-3 py-2.5 bg-background border border-border rounded-lg text-sm focus:outline-none focus:border-gold transition-all resize-none" />
+          <button type="submit" disabled={isSubmitting} className="w-full h-12 rounded-xl bg-gold text-primary-dark font-bold text-sm hover:bg-gold-shine hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
+            {isSubmitting ? <><Loader2 size={16} className="animate-spin" /> Sending...</> : <>Send Enquiry <ArrowRight size={15} /></>}
           </button>
           <p className="text-center text-xs text-muted-foreground">Or call: <a href={site.phoneHref} className="text-primary font-semibold hover:text-gold">{site.phone}</a></p>
         </form>

@@ -239,12 +239,12 @@ function HeroSearch() {
   const handleSelect = (suburb: string) => {
     setQuery(suburb);
     setShowSugg(false);
-    navigate({ to: "/selling" });
+    navigate({ to: "/selling", search: { address: suburb } });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate({ to: "/selling" });
+    navigate({ to: "/selling", search: { address: query } });
     setShowSugg(false);
   };
 

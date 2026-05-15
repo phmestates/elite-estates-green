@@ -1,21 +1,32 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { submitLeadForm } from "@/lib/api";
+
 export function ContactForm() {
   const [busy, setBusy] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const payload = Object.fromEntries(formData.entries());
+
+    try {
+      await submitLeadForm({ formType: "Contact", payload });
+      toast.success("Thanks — your message has been received.");
+      form.reset();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
-    <form
-      className="grid gap-4"
-      onSubmit={(e) => {
-        e.preventDefault();
-        setBusy(true);
-        setTimeout(() => {
-          setBusy(false);
-          toast.success("Thanks — your message has been received.");
-          (e.target as HTMLFormElement).reset();
-        }, 600);
-      }}
-    >
+    <form className="grid gap-4" onSubmit={handleSubmit}>
       <div className="grid sm:grid-cols-2 gap-4">
         <Field label="Name" name="name" required />
         <Field label="Email" name="email" type="email" required />

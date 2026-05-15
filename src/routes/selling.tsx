@@ -71,15 +71,22 @@
 //   );
 // }
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronRight, ChevronLeft, Check, Home, Building, MapPin, HelpCircle, ArrowRight, DollarSign, Key, Users } from "lucide-react";
+import { ChevronRight, ChevronLeft, Check, Home, Building, MapPin, HelpCircle, ArrowRight, DollarSign, Key, Users, Loader2 } from "lucide-react";
 import { CtaBand } from "@/components/CtaBand";
 import { PropertyCard } from "@/components/PropertyCard";
 import { properties } from "@/data/properties";
 import React, { useState, useEffect, useCallback } from "react";
+import { submitLeadForm } from "@/lib/api";
+import { z } from "zod";
 
 import heroicResidence from "@/assets/emerald-twilight-residence.webp";
 
+const searchSchema = z.object({
+  address: z.string().optional(),
+});
+
 export const Route = createFileRoute("/selling")({
+  validateSearch: searchSchema,
   head: () => ({
     meta: [
       { title: "Selling & Leasing — PHM Elite Estates" },
@@ -99,12 +106,21 @@ const STEPS = [
 ];
 
 function SellingPage() {
+  const { address } = Route.useSearch();
   const recentSold = properties.filter((p) => p.status === "Sold").slice(0, 3);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     setLoaded(true);
   }, []);
+
+  const [appraisalData, setAppraisalData] = useState({
+    intent: "",
+    type: "",
+    priceRange: "",
+    timeframe: "",
+    propertyStatus: "",
+  });
 
   return (
     <>
@@ -123,11 +139,11 @@ function SellingPage() {
 
         {/* Content */}
         <div className="relative z-20 container mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col items-center">
-          <InteractiveAppraisal />
+          <InteractiveAppraisal data={appraisalData} onChange={setAppraisalData} />
         </div>
       </section>
 
-      <StandaloneAppraisalForm />
+      <StandaloneAppraisalForm appraisalData={appraisalData} initialAddress={address || ""} />
 
       {/* HOW WE SELL YOUR HOME */}
       <section className="py-20 md:py-32 bg-background">
@@ -176,23 +192,13 @@ function SellingPage() {
 
 // --- INTERACTIVE APPRAISAL COMPONENT ---
 
-function InteractiveAppraisal() {
+function InteractiveAppraisal({ data, onChange }: { data: any, onChange: (data: any) => void }) {
   const [step, setStep] = useState(1);
   const totalSteps = 5;
 
-  // Form State
-  const [formData, setFormData] = useState({
-    intent: "",
-    type: "",
-    priceRange: "",
-    timeframe: "",
-    propertyStatus: "",
-  });
-
-  // Stable callback — never recreated, keeping the selector steps lightweight.
-  const updateForm = useCallback((key: keyof typeof formData, value: string | boolean) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
-  }, []);
+  const updateForm = useCallback((key: string, value: string | boolean) => {
+    onChange((prev: any) => ({ ...prev, [key]: value }));
+  }, [onChange]);
 
   const nextStep = () => setStep((s) => Math.min(s + 1, totalSteps));
   const prevStep = () => setStep((s) => Math.max(s - 1, 1));
@@ -202,11 +208,11 @@ function InteractiveAppraisal() {
 
   // Validation
   const isNextEnabled = () => {
-    if (step === 1) return formData.intent !== "";
-    if (step === 2) return formData.type !== "";
-    if (step === 3) return formData.priceRange !== "";
-    if (step === 4) return formData.timeframe !== "";
-    if (step === 5) return formData.propertyStatus !== "";
+    if (step === 1) return data.intent !== "";
+    if (step === 2) return data.type !== "";
+    if (step === 3) return data.priceRange !== "";
+    if (step === 4) return data.timeframe !== "";
+    if (step === 5) return data.propertyStatus !== "";
     return true;
   };
 
@@ -233,8 +239,8 @@ function InteractiveAppraisal() {
         {step === 1 && (
           <StepContainer title="How much is my property worth?" subtitle="Connecting you with your area expert.">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
-              <SelectButton icon={<DollarSign size={24} />} label="Selling your home" selected={formData.intent === "Selling"} onClick={() => updateForm("intent", "Selling")} />
-              <SelectButton icon={<Key size={24} />} label="Leasing your home" selected={formData.intent === "Leasing"} onClick={() => updateForm("intent", "Leasing")} />
+              <SelectButton icon={<DollarSign size={24} />} label="Selling your home" selected={data.intent === "Selling"} onClick={() => updateForm("intent", "Selling")} />
+              <SelectButton icon={<Key size={24} />} label="Leasing your home" selected={data.intent === "Leasing"} onClick={() => updateForm("intent", "Leasing")} />
             </div>
           </StepContainer>
         )}
@@ -242,10 +248,10 @@ function InteractiveAppraisal() {
         {step === 2 && (
           <StepContainer title="What type of property is it?">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
-              <SelectButton icon={<Home size={24} />} label="House" selected={formData.type === "House"} onClick={() => updateForm("type", "House")} />
-              <SelectButton icon={<Building size={24} />} label="Unit / Apartment" selected={formData.type === "Unit"} onClick={() => updateForm("type", "Unit")} />
-              <SelectButton icon={<MapPin size={24} />} label="Land" selected={formData.type === "Land"} onClick={() => updateForm("type", "Land")} />
-              <SelectButton icon={<HelpCircle size={24} />} label="Other" selected={formData.type === "Other"} onClick={() => updateForm("type", "Other")} />
+              <SelectButton icon={<Home size={24} />} label="House" selected={data.type === "House"} onClick={() => updateForm("type", "House")} />
+              <SelectButton icon={<Building size={24} />} label="Unit / Apartment" selected={data.type === "Unit"} onClick={() => updateForm("type", "Unit")} />
+              <SelectButton icon={<MapPin size={24} />} label="Land" selected={data.type === "Land"} onClick={() => updateForm("type", "Land")} />
+              <SelectButton icon={<HelpCircle size={24} />} label="Other" selected={data.type === "Other"} onClick={() => updateForm("type", "Other")} />
             </div>
           </StepContainer>
         )}
@@ -254,30 +260,28 @@ function InteractiveAppraisal() {
           <StepContainer title="Your expected price range">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
               {["Below $1M", "$1M to $2.5M", "$2.5M to $5M", "Above $5M"].map((range) => (
-                <SelectButton key={range} label={range} selected={formData.priceRange === range} onClick={() => updateForm("priceRange", range)} />
+                <SelectButton key={range} label={range} selected={data.priceRange === range} onClick={() => updateForm("priceRange", range)} />
               ))}
             </div>
           </StepContainer>
         )}
 
         {step === 4 && (
-          <StepContainer title={`How soon do you want to ${formData.intent === "Leasing" ? "lease" : "sell"}?`}>
+          <StepContainer title="When are you looking to sell?">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
-              {["Immediately", "Within 3 to 6 months", "Within 6 to 12 months", "More than 12 months"].map((time) => (
-                <SelectButton key={time} label={time} selected={formData.timeframe === time} onClick={() => updateForm("timeframe", time)} />
+              {["ASAP", "1–3 months", "3–6 months", "6+ months"].map((time) => (
+                <SelectButton key={time} icon={<Key size={20} />} label={time} selected={data.timeframe === time} onClick={() => updateForm("timeframe", time)} />
               ))}
             </div>
           </StepContainer>
         )}
 
         {step === 5 && (
-          <StepContainer title="What best describes your property?" subtitle="Select the current status, then add your details below.">
-            <div className="w-full max-w-2xl flex flex-col gap-6">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <SelectButton icon={<Home size={20} />} label="Owner Occupied" selected={formData.propertyStatus === "Owner Occupied"} onClick={() => updateForm("propertyStatus", "Owner Occupied")} />
-                <SelectButton icon={<Users size={20} />} label="Tenanted" selected={formData.propertyStatus === "Tenanted"} onClick={() => updateForm("propertyStatus", "Tenanted")} />
-                <SelectButton icon={<Key size={20} />} label="Vacant" selected={formData.propertyStatus === "Vacant"} onClick={() => updateForm("propertyStatus", "Vacant")} />
-              </div>
+          <StepContainer title="Current property status?">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
+              {["Owner Occupied", "Tenanted", "Vacant", "Under Construction"].map((status) => (
+                <SelectButton key={status} icon={<Users size={20} />} label={status} selected={data.propertyStatus === status} onClick={() => updateForm("propertyStatus", status)} />
+              ))}
             </div>
           </StepContainer>
         )}
@@ -321,8 +325,40 @@ function InteractiveAppraisal() {
 }
 
 
-function StandaloneAppraisalForm() {
+function StandaloneAppraisalForm({ appraisalData, initialAddress }: { appraisalData: any, initialAddress: string }) {
   const [sameAddress, setSameAddress] = useState(false);
+  const [address, setAddress] = useState(initialAddress);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    setAddress(initialAddress);
+  }, [initialAddress]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const contactData = Object.fromEntries(formData.entries());
+
+    try {
+      await submitLeadForm({
+        formType: "Appraisal",
+        payload: {
+          ...appraisalData,
+          ...contactData,
+          address,
+          sameAddress
+        },
+      });
+      setSuccess(true);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <section id="appraisal-details" className="scroll-mt-28 py-20 md:py-28 bg-secondary">
@@ -339,57 +375,76 @@ function StandaloneAppraisalForm() {
           </div>
 
           <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-elegant">
-            <div className="mb-6">
-              <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Property Address <span className="text-gold">*</span></label>
-              <input
-                type="text"
-                className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
-                placeholder="Street address, suburb, postcode"
-                data-gramm="false"
-              />
-              <label className="flex items-center gap-3 mt-4 cursor-pointer group w-fit">
-                <span className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${sameAddress ? "bg-gold border-gold" : "border-border group-hover:border-gold"}`}>
-                  {sameAddress && <Check size={14} className="text-primary-dark" />}
-                </span>
-                <span className="text-sm text-muted-foreground select-none">The address above is also my home address</span>
-                <input type="checkbox" className="hidden" checked={sameAddress} onChange={(e) => setSameAddress(e.target.checked)} />
-              </label>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
-              <div>
-                <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">First Name <span className="text-gold">*</span></label>
-                <input type="text" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" data-gramm="false" />
+            {success ? (
+              <div className="flex flex-col items-center text-center py-12 gap-4">
+                <div className="w-16 h-16 rounded-full bg-gold/20 grid place-items-center">
+                  <Check size={32} className="text-gold" />
+                </div>
+                <h3 className="font-display text-2xl font-bold text-primary-dark">Appraisal Request Received</h3>
+                <p className="text-muted-foreground">Thank you for your request. One of our property specialists will be in touch with you shortly.</p>
               </div>
-              <div>
-                <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Last Name <span className="text-gold">*</span></label>
-                <input type="text" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" data-gramm="false" />
-              </div>
-            </div>
+            ) : (
+              <form onSubmit={handleSubmit}>
+                <div className="mb-6">
+                  <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Property Address <span className="text-gold">*</span></label>
+                  <input
+                    required
+                    name="address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    type="text"
+                    className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
+                    placeholder="Street address, suburb, postcode"
+                  />
+                  <label className="flex items-center gap-3 mt-4 cursor-pointer group w-fit">
+                    <span className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${sameAddress ? "bg-gold border-gold" : "border-border group-hover:border-gold"}`}>
+                      {sameAddress && <Check size={14} className="text-primary-dark" />}
+                    </span>
+                    <span className="text-sm text-muted-foreground select-none">The address above is also my home address</span>
+                    <input type="checkbox" className="hidden" checked={sameAddress} onChange={(e) => setSameAddress(e.target.checked)} />
+                  </label>
+                </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
-              <div>
-                <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Email <span className="text-gold">*</span></label>
-                <input type="email" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" data-gramm="false" />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Phone <span className="text-gold">*</span></label>
-                <input type="tel" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" data-gramm="false" />
-              </div>
-            </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                  <div>
+                    <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">First Name <span className="text-gold">*</span></label>
+                    <input required name="firstName" type="text" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Last Name <span className="text-gold">*</span></label>
+                    <input required name="lastName" type="text" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" />
+                  </div>
+                </div>
 
-            <div className="mb-7">
-              <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Additional details</label>
-              <textarea
-                className="w-full h-32 bg-background border border-border rounded-xl p-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all resize-none text-base"
-                placeholder="Any recent renovations or additional details? (Optional)"
-                data-gramm="false"
-              />
-            </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                  <div>
+                    <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Email <span className="text-gold">*</span></label>
+                    <input required name="email" type="email" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Phone <span className="text-gold">*</span></label>
+                    <input required name="phone" type="tel" className="w-full bg-background border border-border rounded-lg h-12 px-4 text-foreground focus:outline-none focus:border-gold transition-colors" />
+                  </div>
+                </div>
 
-            <button className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-8 h-13 rounded-lg bg-gold text-primary-dark font-bold hover:bg-gold-shine hover:shadow-gold hover:-translate-y-0.5 transition-all">
-              Request Appraisal <Check size={18} />
-            </button>
+                <div className="mb-7">
+                  <label className="block text-xs font-bold text-primary-dark/70 uppercase tracking-widest mb-2">Additional details</label>
+                  <textarea
+                    name="details"
+                    className="w-full h-32 bg-background border border-border rounded-xl p-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all resize-none text-base"
+                    placeholder="Any recent renovations or additional details? (Optional)"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-8 h-13 rounded-lg bg-gold text-primary-dark font-bold hover:bg-gold-shine hover:shadow-gold hover:-translate-y-0.5 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? <><Loader2 size={18} className="animate-spin" /> Submitting...</> : <>Request Appraisal <Check size={18} /></>}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </div>
