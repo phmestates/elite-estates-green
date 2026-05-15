@@ -10,7 +10,7 @@ import { useState } from "react";
 import { PropertyCard } from "@/components/PropertyCard";
 import type { Property } from "@/data/properties";
 import { submitLeadForm } from "@/lib/api";
-
+import agentImg from "@/assets/harpreetsirgreen.jpeg";
 export const Route = createFileRoute("/property/$id")({
   component: PropertyDetailPage,
 });
@@ -134,7 +134,7 @@ function PropertyDetailPage() {
               <div className="bg-primary-dark rounded-2xl p-6 text-white">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-gold shrink-0">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=70" alt="Agent" className="w-full h-full object-cover" />
+                    <img src={agentImg} alt="Agent" className="w-full h-full object-cover" />
                   </div>
                   <div>
                     <p className="font-display font-bold text-white">Harpreet Singh Kohli</p>

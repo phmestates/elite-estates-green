@@ -208,7 +208,7 @@ function InteractiveFinanceForm({ data, onChange }: { data: any, onChange: (data
           <StepContainer title="How much are you looking to finance?">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
               {["Under $500K", "$500K – $1M", "$1M – $2.5M", "$2.5M – $5M", "Above $5M"].map((range) => (
-                <SelectButton key={range} icon={<DollarSign size={20} />} label={range} selected={data.financeAmount === range} onClick={() => updateForm("financeAmount", range)} />
+                <SelectButton key={range} icon={<DollarSign size={0} />} label={range} selected={data.financeAmount === range} onClick={() => updateForm("financeAmount", range)} />
               ))}
             </div>
           </StepContainer>
