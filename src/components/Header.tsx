@@ -23,14 +23,18 @@ export function Header() {
           }`}
       >
         <div className="container mx-auto px-4 lg:px-8 h-full flex items-center justify-between">
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
             <a href={site.phoneHref} className="inline-flex items-center gap-2 hover:text-gold transition-colors duration-300">
               <Phone size={13} className="text-gold" /> {site.phone}
             </a>
-            <a href={`mailto:${site.email}`} className="inline-flex items-center gap-2 hover:text-gold transition-colors duration-300">
+            <span className="text-white/20">·</span>
+            <a href={site.phone2Href} className="inline-flex items-center gap-2 hover:text-gold transition-colors duration-300">
+              <Phone size={13} className="text-gold" /> {site.phone2}
+            </a>
+            <a href={`mailto:${site.email}`} className="hidden xl:inline-flex items-center gap-2 hover:text-gold transition-colors duration-300">
               <Mail size={13} className="text-gold" /> {site.email}
             </a>
-            <span className="hidden lg:inline-flex items-center gap-2 text-white/60">
+            <span className="hidden 2xl:inline-flex items-center gap-2 text-white/60">
               <Clock size={13} className="text-gold" /> {site.hours}
             </span>
           </div>
@@ -111,7 +115,7 @@ export function Header() {
 
       {/* Mobile Menu */}
       <div
-        className={`lg:hidden overflow-hidden transition-all duration-500 ease-in-out ${open ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
+        className={`lg:hidden overflow-hidden transition-all duration-500 ease-in-out ${open ? "max-h-[520px] opacity-100" : "max-h-0 opacity-0"
           }`}
       >
         <nav className="bg-background/98 backdrop-blur-2xl border-t border-border shadow-2xl">
@@ -128,9 +132,12 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-            <div className="mt-4 pt-4 border-t border-border/60 px-4">
+            <div className="mt-4 pt-4 border-t border-border/60 px-4 flex flex-col gap-2">
               <a href={site.phoneHref} className="w-full inline-flex items-center justify-center gap-2 h-12 rounded-full bg-primary-dark text-primary-foreground text-[14px] font-semibold shadow-lg hover:bg-primary-dark/90 transition-all">
                 <Phone size={16} className="text-gold" /> {site.phone}
+              </a>
+              <a href={site.phone2Href} className="w-full inline-flex items-center justify-center gap-2 h-12 rounded-full border border-border text-primary-dark text-[14px] font-semibold hover:bg-secondary transition-all">
+                <Phone size={16} className="text-gold" /> {site.phone2}
               </a>
             </div>
           </div>

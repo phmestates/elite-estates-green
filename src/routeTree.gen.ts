@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SellingRouteImport } from './routes/selling'
 import { Route as RentingRouteImport } from './routes/renting'
 import { Route as PropertyRouteImport } from './routes/property'
+import { Route as FinanceRouteImport } from './routes/finance'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BuyingRouteImport } from './routes/buying'
 import { Route as BlogRouteImport } from './routes/blog'
@@ -31,6 +32,11 @@ const RentingRoute = RentingRouteImport.update({
 const PropertyRoute = PropertyRouteImport.update({
   id: '/property',
   path: '/property',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinanceRoute = FinanceRouteImport.update({
+  id: '/finance',
+  path: '/finance',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogRoute
   '/buying': typeof BuyingRoute
   '/contact': typeof ContactRoute
+  '/finance': typeof FinanceRoute
   '/property': typeof PropertyRoute
   '/renting': typeof RentingRoute
   '/selling': typeof SellingRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogRoute
   '/buying': typeof BuyingRoute
   '/contact': typeof ContactRoute
+  '/finance': typeof FinanceRoute
   '/property': typeof PropertyRoute
   '/renting': typeof RentingRoute
   '/selling': typeof SellingRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/blog': typeof BlogRoute
   '/buying': typeof BuyingRoute
   '/contact': typeof ContactRoute
+  '/finance': typeof FinanceRoute
   '/property': typeof PropertyRoute
   '/renting': typeof RentingRoute
   '/selling': typeof SellingRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/buying'
     | '/contact'
+    | '/finance'
     | '/property'
     | '/renting'
     | '/selling'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/buying'
     | '/contact'
+    | '/finance'
     | '/property'
     | '/renting'
     | '/selling'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/buying'
     | '/contact'
+    | '/finance'
     | '/property'
     | '/renting'
     | '/selling'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRoute
   BuyingRoute: typeof BuyingRoute
   ContactRoute: typeof ContactRoute
+  FinanceRoute: typeof FinanceRoute
   PropertyRoute: typeof PropertyRoute
   RentingRoute: typeof RentingRoute
   SellingRoute: typeof SellingRoute
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/property'
       fullPath: '/property'
       preLoaderRoute: typeof PropertyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/finance': {
+      id: '/finance'
+      path: '/finance'
+      fullPath: '/finance'
+      preLoaderRoute: typeof FinanceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogRoute: BlogRoute,
   BuyingRoute: BuyingRoute,
   ContactRoute: ContactRoute,
+  FinanceRoute: FinanceRoute,
   PropertyRoute: PropertyRoute,
   RentingRoute: RentingRoute,
   SellingRoute: SellingRoute,
@@ -208,3 +229,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

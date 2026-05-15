@@ -46,6 +46,21 @@ export function CtaBand() {
             </span>
             <ArrowUpRight size={20} className="group-hover:rotate-45 transition-transform duration-300" />
           </a>
+          <a
+            href={site.phone2Href}
+            className="group flex items-center justify-between gap-4 px-5 h-16 rounded-2xl bg-white/10 hover:bg-white/[0.14] backdrop-blur-md border border-white/15 hover:border-gold/50 text-white transition-all"
+          >
+            <span className="flex items-center gap-3">
+              <span className="grid place-items-center w-10 h-10 rounded-xl bg-gold/15 text-gold">
+                <Phone size={16} />
+              </span>
+              <span className="text-left">
+                <span className="block text-[10px] uppercase tracking-[0.3em] text-white/60">Alternative line</span>
+                <span className="block font-medium text-base">{site.phone2}</span>
+              </span>
+            </span>
+            <ArrowUpRight size={20} className="text-gold group-hover:rotate-45 transition-transform duration-300" />
+          </a>
           <Link
             to="/contact"
             className="group flex items-center justify-between gap-4 px-5 h-16 rounded-2xl bg-white/5 hover:bg-white/[0.08] backdrop-blur-md border border-white/15 hover:border-gold/50 text-white transition-all"

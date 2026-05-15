@@ -247,7 +247,7 @@
 //   );
 // }
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Search, ClipboardEdit, Mail, ShieldCheck, Users, TrendingUp, Quote, Zap, Award } from "lucide-react";
+import { Search, Landmark, Mail, ShieldCheck, Users, TrendingUp, Quote, Award } from "lucide-react";
 import { PropertyCard } from "@/components/PropertyCard";
 import { CtaBand } from "@/components/CtaBand";
 import { properties } from "@/data/properties";
@@ -380,21 +380,21 @@ function HomePage() {
                 </Link>
               </div>
 
-              {/* Selling Your Property CTA Box */}
+              {/* Finance Your Property CTA Box */}
               <div className="mt-10 pt-10 border-t border-border/60">
                 <div className="bg-primary/5 hover:bg-primary/10 transition-colors duration-300 border border-primary/10 rounded-xl p-6 lg:p-7 flex flex-col sm:flex-row items-center gap-5 lg:gap-6 text-center sm:text-left group">
                   <div className="w-14 h-14 shrink-0 grid place-items-center rounded-full bg-white shadow-sm text-primary group-hover:scale-110 group-hover:shadow-md transition-all duration-500">
-                    <Zap size={24} className="text-gold" />
+                    <Landmark size={24} className="text-gold" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-display font-bold text-xl text-primary-dark leading-tight">Selling Your Property?</h4>
-                    <p className="text-sm sm:text-base text-primary-dark/70 mt-1.5">Request a premium market estimation instantly.</p>
+                    <h4 className="font-display font-bold text-xl text-primary-dark leading-tight">Finance Your Property</h4>
+                    <p className="text-sm sm:text-base text-primary-dark/70 mt-1.5">Tailored finance solutions from our specialist team.</p>
                   </div>
                   <Link
-                    to="/selling"
+                    to="/finance"
                     className="inline-flex items-center justify-center gap-2 bg-gradient-gold text-gold-foreground font-semibold px-8 h-12 rounded-lg hover:shadow-lg hover:shadow-gold/20 transition-all duration-300 w-full sm:w-auto text-base shrink-0"
                   >
-                    Appraisal
+                    Explore Finance
                   </Link>
                 </div>
               </div>
@@ -413,7 +413,7 @@ function HomePage() {
       <section className="py-16 md:py-24 bg-secondary">
         <div className="container mx-auto px-4 grid gap-6 md:grid-cols-3">
           <FeatureCard icon={<Search size={28} />} title="Interested in Buying?" body="Use our smart search to find your dream property. Filter by suburb, category, price and more." link={{ to: "/buying", label: "Start searching" }} />
-          <FeatureCard icon={<ClipboardEdit size={28} />} title="Request an Appraisal" body="How much is your home worth? Find out the value of your home in today's market." link={{ to: "/selling", label: "Sell your home" }} />
+          <FeatureCard icon={<Landmark size={28} />} title="Finance Your Property" body="Explore tailored finance options with our specialist. From first home to investment — we find the right fit." link={{ to: "/finance", label: "Explore finance" }} />
           <FeatureCard icon={<Mail size={28} />} title="Receive Email Alerts" body="Be the first to know about new listings that match your search criteria." link={{ to: "/contact", label: "Subscribe now" }} />
         </div>
       </section>

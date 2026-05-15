@@ -2,10 +2,15 @@ export const site = {
   name: "PHM Elite Estates",
   shortName: "PHM Elite",
   tagline: "Premium real estate, personally delivered.",
-  phone: "(02) 5550 0100",
-  phoneHref: "tel:+61255500100",
+  // Primary phone
+  phone: "+61 424 148 407",
+  phoneHref: "tel:+61424148407",
+  // Secondary phone
+  phone2: "+61 434 996 060",
+  phone2Href: "tel:+61434996060",
   email: "admin@phmestates.com",
-  address: "Suite 14, 220 Crown Boulevard, Sydney NSW 2000",
+  address: "Virtual Office — Australia-Wide",
+  addressDetail: "Servicing Sydney, Melbourne & beyond",
   hours: "Mon–Fri 8:30am – 6:00pm · Sat 9:00am – 4:00pm",
   socials: {
     facebook: "https://facebook.com",
@@ -19,6 +24,7 @@ export const navItems = [
   { to: "/buying", label: "Buying" },
   { to: "/selling", label: "Selling" },
   { to: "/renting", label: "Renting" },
+  { to: "/finance", label: "Finance" },
   { to: "/property", label: "Property" },
   { to: "/blog", label: "Blog" },
   { to: "/about", label: "About" },

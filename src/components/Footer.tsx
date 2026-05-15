@@ -29,11 +29,27 @@ export function Footer() {
 
         <div>
           <h3 className="font-display text-lg text-gold mb-4">Get in Touch</h3>
-          <ul className="space-y-2.5 text-sm">
-            <li className="flex items-start gap-2.5"><MapPin size={16} className="text-gold mt-0.5 shrink-0" />{site.address}</li>
-            <li className="flex items-center gap-2.5"><Phone size={16} className="text-gold shrink-0" /><a href={site.phoneHref} className="hover:text-gold">{site.phone}</a></li>
-            <li className="flex items-center gap-2.5"><Mail size={16} className="text-gold shrink-0" /><a href={`mailto:${site.email}`} className="hover:text-gold break-all">{site.email}</a></li>
-            <li className="text-white/60 text-xs pt-2">{site.hours}</li>
+          <ul className="space-y-3 text-sm">
+            <li className="flex items-start gap-2.5">
+              <MapPin size={16} className="text-gold mt-0.5 shrink-0" />
+              <span>
+                <span className="block">{site.address}</span>
+                <span className="text-white/50 text-xs">{site.addressDetail}</span>
+              </span>
+            </li>
+            <li className="flex items-center gap-2.5">
+              <Phone size={16} className="text-gold shrink-0" />
+              <a href={site.phoneHref} className="hover:text-gold">{site.phone}</a>
+            </li>
+            <li className="flex items-center gap-2.5">
+              <Phone size={16} className="text-gold shrink-0" />
+              <a href={site.phone2Href} className="hover:text-gold">{site.phone2}</a>
+            </li>
+            <li className="flex items-center gap-2.5">
+              <Mail size={16} className="text-gold shrink-0" />
+              <a href={`mailto:${site.email}`} className="hover:text-gold break-all">{site.email}</a>
+            </li>
+            <li className="text-white/60 text-xs pt-1">{site.hours}</li>
           </ul>
         </div>
       </div>
