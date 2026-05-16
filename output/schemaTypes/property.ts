@@ -138,8 +138,8 @@ export const propertyType = defineType({
     }),
     defineField({
       name: 'images',
-      title: 'Gallery Images (up to 5)',
-      description: 'Upload up to 5 additional property photos. If left empty, stock photos will be used automatically.',
+      title: 'Gallery Images',
+      description: 'Upload as many property photos as you like. If left empty, stock photos will be used automatically.',
       type: 'array',
       of: [
         {
@@ -147,7 +147,6 @@ export const propertyType = defineType({
           options: { hotspot: true },
         },
       ],
-      validation: (Rule) => Rule.max(5).warning('Maximum 5 gallery images allowed.'),
     }),
     defineField({
       name: 'floorPlan',

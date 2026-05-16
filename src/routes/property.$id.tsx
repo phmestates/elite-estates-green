@@ -51,10 +51,11 @@ function PropertyDetailPage() {
     );
   }
 
-  // Build gallery: use Sanity images if available, fill remaining slots with fallbacks
+  // Build gallery: use all Sanity images, fall back to stock photos only if none uploaded
   const sanityImages = [p.image, ...(p.images ?? [])].filter(Boolean) as string[];
-  const needed = Math.max(0, 5 - sanityImages.length);
-  const galleryImages = [...sanityImages, ...FALLBACK_GALLERY.slice(0, needed)];
+  const galleryImages = sanityImages.length >= 2
+    ? sanityImages
+    : [...sanityImages, ...FALLBACK_GALLERY.slice(0, 5 - sanityImages.length)];
   const related = properties.filter((r) => r.id !== p.id && (r.suburb === p.suburb || r.category === p.category)).slice(0, 3);
 
   return (
