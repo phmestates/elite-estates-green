@@ -130,9 +130,32 @@ export const propertyType = defineType({
     defineField({
       name: 'image',
       title: 'Main Image',
+      description: 'Primary hero image shown on listing cards and at the top of the gallery.',
       type: 'image',
       options: {
-        hotspot: true, // Enables UI for cropping and focal points
+        hotspot: true,
+      },
+    }),
+    defineField({
+      name: 'images',
+      title: 'Gallery Images (up to 5)',
+      description: 'Upload up to 5 additional property photos. If left empty, stock photos will be used automatically.',
+      type: 'array',
+      of: [
+        {
+          type: 'image',
+          options: { hotspot: true },
+        },
+      ],
+      validation: (Rule) => Rule.max(5).warning('Maximum 5 gallery images allowed.'),
+    }),
+    defineField({
+      name: 'floorPlan',
+      title: 'Floor Plan',
+      description: 'Optional floor plan image. If provided, it will replace the "coming soon" placeholder.',
+      type: 'image',
+      options: {
+        hotspot: true,
       },
     }),
   ],

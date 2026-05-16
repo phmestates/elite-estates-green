@@ -26,6 +26,8 @@ export type Property = {
   shortDesc: string;
   description: string;
   image: string;
+  images?: string[];       // up to 5 gallery images from Sanity
+  floorPlan?: string;      // optional floor plan image URL
 };
 
 export const properties = listingsData as Property[];

@@ -7,7 +7,7 @@ import {
   Bed, Bath, Car, MapPin, Maximize2, Check, Phone, Mail,
   ArrowLeft, ChevronRight, Home, Share2, ArrowRight, X, ChevronLeft, Image, Loader2
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { PropertyCard } from "@/components/PropertyCard";
 import type { Property } from "@/data/properties";
 import { submitLeadForm } from "@/lib/api";
@@ -22,12 +22,6 @@ export const Route = createFileRoute("/property/$id")({
   component: PropertyDetailPage,
 });
 
-const GALLERY_EXTRAS = [
-  "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=1200&q=75",
-  "https://images.unsplash.com/photo-1556909212-d5b604d0c90d?auto=format&fit=crop&w=1200&q=75",
-  "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=1200&q=75",
-  "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=1200&q=75",
-];
 
 const categoryColors: Record<string, string> = {
   "House & Land": "bg-emerald-700 text-white",
@@ -57,7 +51,10 @@ function PropertyDetailPage() {
     );
   }
 
-  const galleryImages = [p.image, ...GALLERY_EXTRAS];
+  // Build gallery: use Sanity images if available, fill remaining slots with fallbacks
+  const sanityImages = [p.image, ...(p.images ?? [])].filter(Boolean) as string[];
+  const needed = Math.max(0, 5 - sanityImages.length);
+  const galleryImages = [...sanityImages, ...FALLBACK_GALLERY.slice(0, needed)];
   const related = properties.filter((r) => r.id !== p.id && (r.suburb === p.suburb || r.category === p.category)).slice(0, 3);
 
   return (
@@ -123,16 +120,34 @@ function PropertyDetailPage() {
               </div>
             )}
 
+            {/* Floor Plan */}
             <div>
               <h2 className="font-display text-2xl font-bold text-primary-dark mb-5">Floor Plan</h2>
-              <div className="rounded-2xl border-2 border-dashed border-border bg-secondary flex flex-col items-center justify-center py-16 gap-4">
-                <Image size={40} className="text-muted-foreground/40" />
-                <p className="font-display font-semibold text-lg text-primary-dark">Floor plan coming soon</p>
-                <p className="text-sm text-muted-foreground">Contact our agent to request the full floor plan for this property.</p>
-                <a href={site.phoneHref} className="mt-2 inline-flex items-center gap-2 px-6 h-11 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:bg-primary-dark transition-colors">
-                  <Phone size={15} /> Call {site.phone}
-                </a>
-              </div>
+              {p.floorPlan ? (
+                <div className="rounded-2xl overflow-hidden border border-border shadow-sm">
+                  <img
+                    src={p.floorPlan}
+                    alt={`${p.title} floor plan`}
+                    className="w-full object-contain max-h-[600px] bg-secondary cursor-pointer"
+                    onClick={() => window.open(p.floorPlan, '_blank')}
+                  />
+                  <div className="bg-secondary px-4 py-3 flex items-center justify-between border-t border-border">
+                    <span className="text-xs text-muted-foreground">Click image to view full size</span>
+                    <a href={p.floorPlan} target="_blank" rel="noreferrer" className="text-xs font-bold text-primary hover:text-gold transition-colors flex items-center gap-1">
+                      <Image size={12} /> Open floor plan
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <div className="rounded-2xl border-2 border-dashed border-border bg-secondary flex flex-col items-center justify-center py-16 gap-4">
+                  <Image size={40} className="text-muted-foreground/40" />
+                  <p className="font-display font-semibold text-lg text-primary-dark">Floor plan coming soon</p>
+                  <p className="text-sm text-muted-foreground">Contact our agent to request the full floor plan for this property.</p>
+                  <a href={site.phoneHref} className="mt-2 inline-flex items-center gap-2 px-6 h-11 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:bg-primary-dark transition-colors">
+                    <Phone size={15} /> Call {site.phone}
+                  </a>
+                </div>
+              )}
             </div>
           </div>
 
@@ -184,20 +199,88 @@ function PropertyDetailPage() {
   );
 }
 
+const FALLBACK_GALLERY = [
+  "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=1200&q=75",
+  "https://images.unsplash.com/photo-1556909212-d5b604d0c90d?auto=format&fit=crop&w=1200&q=75",
+  "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=1200&q=75",
+  "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=1200&q=75",
+];
+
 function PropertyGallery({ images, title }: { images: string[]; title: string }) {
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [mobileIdx, setMobileIdx] = useState(0);
+  const touchStartX = useRef<number | null>(null);
   const prev = () => setLightbox((i) => (i === null ? null : (i - 1 + images.length) % images.length));
   const next = () => setLightbox((i) => (i === null ? null : (i + 1) % images.length));
 
+  const mobilePrev = () => setMobileIdx((i) => (i - 1 + images.length) % images.length);
+  const mobileNext = () => setMobileIdx((i) => (i + 1) % images.length);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) diff > 0 ? mobileNext() : mobilePrev();
+    touchStartX.current = null;
+  };
+
   return (
     <>
-      <div className="grid grid-cols-4 grid-rows-2 gap-1 h-[55vh] min-h-[300px] max-h-[520px]">
-        <div className="col-span-4 md:col-span-2 row-span-2 relative overflow-hidden cursor-pointer group" onClick={() => setLightbox(0)}>
+      {/* ── MOBILE: full-width swipe slider ─────────────────────────── */}
+      <div
+        className="md:hidden relative overflow-hidden bg-black select-none"
+        style={{ height: "60vw", minHeight: 220, maxHeight: 380 }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        {images.map((img, i) => (
+          <img
+            key={i}
+            src={img}
+            alt={`${title} view ${i + 1}`}
+            onClick={() => setLightbox(i)}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-400 cursor-pointer ${i === mobileIdx ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          />
+        ))}
+        {/* Prev/Next arrows */}
+        <button
+          onClick={(e) => { e.stopPropagation(); mobilePrev(); }}
+          className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/50 grid place-items-center text-white backdrop-blur-sm z-10"
+        >
+          <ChevronLeft size={20} />
+        </button>
+        <button
+          onClick={(e) => { e.stopPropagation(); mobileNext(); }}
+          className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/50 grid place-items-center text-white backdrop-blur-sm z-10"
+        >
+          <ChevronRight size={20} />
+        </button>
+        {/* Dot indicators */}
+        <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10">
+          {images.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setMobileIdx(i)}
+              className={`rounded-full transition-all duration-300 ${i === mobileIdx ? "w-5 h-2 bg-gold" : "w-2 h-2 bg-white/50"}`}
+            />
+          ))}
+        </div>
+        {/* Counter badge */}
+        <div className="absolute top-3 right-3 bg-black/60 text-white text-xs px-2.5 py-1 rounded-full backdrop-blur-sm z-10">
+          {mobileIdx + 1} / {images.length}
+        </div>
+      </div>
+
+      {/* ── DESKTOP: grid layout ─────────────────────────────────────── */}
+      <div className="hidden md:grid grid-cols-4 grid-rows-2 gap-1 h-[55vh] min-h-[300px] max-h-[520px]">
+        <div className="col-span-2 row-span-2 relative overflow-hidden cursor-pointer group" onClick={() => setLightbox(0)}>
           <img src={images[0]} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
         </div>
         {images.slice(1, 5).map((img, i) => (
-          <div key={i} className="hidden md:block relative overflow-hidden cursor-pointer group" onClick={() => setLightbox(i + 1)}>
+          <div key={i} className="relative overflow-hidden cursor-pointer group" onClick={() => setLightbox(i + 1)}>
             <img src={img} alt={`View ${i + 2}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
             {i === 3 && images.length > 5 && (
@@ -208,11 +291,15 @@ function PropertyGallery({ images, title }: { images: string[]; title: string })
           </div>
         ))}
       </div>
+
+      {/* View all button */}
       <div className="bg-primary-dark px-4 py-2 flex justify-end">
         <button onClick={() => setLightbox(0)} className="text-white/80 text-sm hover:text-gold flex items-center gap-2 transition-colors">
           <Image size={14} /> View all {images.length} photos
         </button>
       </div>
+
+      {/* ── LIGHTBOX ─────────────────────────────────────────────────── */}
       {lightbox !== null && (
         <div className="fixed inset-0 z-[200] bg-black/95 flex flex-col" onClick={() => setLightbox(null)}>
           <div className="flex items-center justify-between px-4 py-4 shrink-0" onClick={(e) => e.stopPropagation()}>

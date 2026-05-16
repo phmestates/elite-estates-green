@@ -47,7 +47,9 @@ export async function getProperties(): Promise<Property[]> {
     features,
     shortDesc,
     description,
-    "image": image.asset->url
+    "image": image.asset->url,
+    "images": images[].asset->url,
+    "floorPlan": floorPlan.asset->url
   }`;
   const properties = await sanityClient.fetch(query);
   return properties.map((p: any) => ({
@@ -77,7 +79,9 @@ export async function getPropertyById(id: string): Promise<Property | null> {
     features,
     shortDesc,
     description,
-    "image": image.asset->url
+    "image": image.asset->url,
+    "images": images[].asset->url,
+    "floorPlan": floorPlan.asset->url
   }`;
   const property = await sanityClient.fetch(query, { id });
   if (!property) return null;
