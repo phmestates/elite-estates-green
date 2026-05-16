@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/PageHero";
 import { PropertyCard } from "@/components/PropertyCard";
 import { CtaBand } from "@/components/CtaBand";
-import { properties } from "@/data/properties";
+
+import { getProperties } from "@/lib/api";
 import { CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/renting")({
@@ -14,10 +15,12 @@ export const Route = createFileRoute("/renting")({
       { property: "og:description", content: "Quality rentals and trusted property management." },
     ],
   }),
+  loader: () => getProperties(),
   component: RentingPage,
 });
 
 function RentingPage() {
+  const properties = Route.useLoaderData();
   const rentals = properties.filter((p) => p.status === "For Rent");
 
   return (

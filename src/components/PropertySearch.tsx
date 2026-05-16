@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
-import { properties, SUBURBS, CATEGORIES, type Property, type PropertyCategory } from "@/data/properties";
+import { CATEGORIES, type Property, type PropertyCategory } from "@/data/properties";
 import { PropertyCard } from "./PropertyCard";
 import EnquiryModal from "./EnquiryModal";
 
@@ -14,14 +14,17 @@ function fmt(n: number) {
 }
 
 export function PropertySearch({
+  properties,
   defaultStatus,
   defaultSuburb,
   showAll = false,
 }: {
+  properties: Property[];
   defaultStatus?: Property["status"];
   defaultSuburb?: string;
   showAll?: boolean;
 }) {
+  const SUBURBS = useMemo(() => [...new Set(properties.map((p) => p.suburb))].sort(), [properties]);
   const [suburb, setSuburb] = useState(defaultSuburb ?? "");
   const [category, setCategory] = useState<PropertyCategory | "">("");
   const [bedsMin, setBedsMin] = useState(0);

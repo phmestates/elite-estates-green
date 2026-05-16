@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Search, Landmark, Mail, ShieldCheck, Users, TrendingUp, Quote, Award, MapPin, ArrowRight, LineChart } from "lucide-react";
 import { PropertyCard } from "@/components/PropertyCard";
 import { CtaBand } from "@/components/CtaBand";
-import { properties, SUBURBS } from "@/data/properties";
+import { SUBURBS } from "@/data/properties";
+import { getProperties } from "@/lib/api";
 import { testimonials } from "@/data/testimonials";
 import { useEffect, useState, useRef } from "react";
 import EnquiryModal from "@/components/EnquiryModal";
@@ -18,10 +19,12 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "House & land packages. Personal service. Real results." },
     ],
   }),
+  loader: () => getProperties(),
   component: HomePage,
 });
 
 function HomePage() {
+  const properties = Route.useLoaderData();
   const featured = properties.slice(0, 6);
   const [loaded, setLoaded] = useState(false);
   const [enquiryProp, setEnquiryProp] = useState<Property | null>(null);

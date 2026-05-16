@@ -74,9 +74,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ChevronRight, ChevronLeft, Check, Home, Building, MapPin, HelpCircle, ArrowRight, DollarSign, Key, Users, Loader2 } from "lucide-react";
 import { CtaBand } from "@/components/CtaBand";
 import { PropertyCard } from "@/components/PropertyCard";
-import { properties } from "@/data/properties";
+
 import React, { useState, useEffect, useCallback } from "react";
-import { submitLeadForm } from "@/lib/api";
+import { submitLeadForm, getProperties } from "@/lib/api";
 import { z } from "zod";
 
 import heroicResidence from "@/assets/emerald-twilight-residence.webp";
@@ -95,6 +95,7 @@ export const Route = createFileRoute("/selling")({
       { property: "og:description", content: "Request a no-obligation appraisal today." },
     ],
   }),
+  loader: () => getProperties(),
   component: SellingPage,
 });
 
@@ -107,6 +108,7 @@ const STEPS = [
 
 function SellingPage() {
   const { address } = Route.useSearch();
+  const properties = Route.useLoaderData();
   const recentSold = properties.filter((p) => p.status === "Sold").slice(0, 3);
   const [loaded, setLoaded] = useState(false);
 

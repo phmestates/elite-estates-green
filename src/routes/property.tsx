@@ -3,6 +3,7 @@ import { PageHero } from "@/components/PageHero";
 import { PropertySearch } from "@/components/PropertySearch";
 import { CtaBand } from "@/components/CtaBand";
 import { z } from "zod";
+import { getProperties } from "@/lib/api";
 
 const searchSchema = z.object({
   suburb: z.string().optional(),
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/property")({
       { property: "og:description", content: "House & land packages, dual key, and development opportunities Australia-wide." },
     ],
   }),
+  loader: () => getProperties(),
   component: PropertyLayout,
 });
 
@@ -36,6 +38,7 @@ function PropertyLayout() {
 
 function PropertyListPage() {
   const { suburb } = Route.useSearch();
+  const properties = Route.useLoaderData();
 
   return (
     <>
@@ -48,7 +51,7 @@ function PropertyListPage() {
 
       <section className="py-16 md:py-20">
         <div className="container mx-auto px-4">
-          <PropertySearch defaultSuburb={suburb} showAll />
+          <PropertySearch properties={properties} defaultSuburb={suburb} showAll />
         </div>
       </section>
 

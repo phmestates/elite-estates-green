@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { properties } from "@/data/properties";
+
+import { getPropertyById, getProperties } from "@/lib/api";
 import { CtaBand } from "@/components/CtaBand";
 import { site } from "@/data/site";
 import {
@@ -12,6 +13,12 @@ import type { Property } from "@/data/properties";
 import { submitLeadForm } from "@/lib/api";
 import agentImg from "@/assets/harpreetsirgreen.jpeg";
 export const Route = createFileRoute("/property/$id")({
+  loader: async ({ params }) => {
+    const p = await getPropertyById(params.id);
+    if (!p) return { p: null, all: [] };
+    const all = await getProperties();
+    return { p, all };
+  },
   component: PropertyDetailPage,
 });
 
@@ -35,7 +42,7 @@ const pricePrefix: Record<string, string> = {
 
 function PropertyDetailPage() {
   const { id } = Route.useParams();
-  const p = properties.find((x) => x.id === id);
+  const { p, all: properties } = Route.useLoaderData();
 
   if (!p) {
     return (

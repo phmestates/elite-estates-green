@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/PageHero";
 import { PropertySearch } from "@/components/PropertySearch";
 import { CtaBand } from "@/components/CtaBand";
+import { getProperties } from "@/lib/api";
 
 export const Route = createFileRoute("/buying")({
   head: () => ({
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/buying")({
       { property: "og:description", content: "House & land packages, dual key and development opportunities Australia-wide." },
     ],
   }),
+  loader: () => getProperties(),
   component: BuyingPage,
 });
 
@@ -23,6 +25,7 @@ const STEPS = [
 ];
 
 function BuyingPage() {
+  const properties = Route.useLoaderData();
   return (
     <>
       <PageHero
@@ -52,7 +55,7 @@ function BuyingPage() {
           <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-dark text-center">Search available properties</h2>
           <p className="text-center text-muted-foreground mt-2">Use the filters to narrow your search.</p>
           <div className="mt-10">
-            <PropertySearch defaultStatus="For Sale" />
+            <PropertySearch properties={properties} defaultStatus="For Sale" />
           </div>
         </div>
       </section>

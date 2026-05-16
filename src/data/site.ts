@@ -25,7 +25,6 @@ export const navItems = [
   { to: "/selling", label: "Selling" },
   { to: "/renting", label: "Renting" },
   { to: "/finance", label: "Finance" },
-  { to: "/property", label: "Property" },
   { to: "/blog", label: "Blog" },
   { to: "/about", label: "About" },
   { to: "/reviews", label: "Reviews" },
