@@ -2,7 +2,6 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Search, Landmark, Mail, ShieldCheck, Users, TrendingUp, Quote, Award, MapPin, ArrowRight, LineChart } from "lucide-react";
 import { PropertyCard } from "@/components/PropertyCard";
 import { CtaBand } from "@/components/CtaBand";
-import { SUBURBS } from "@/data/properties";
 import { getProperties } from "@/lib/api";
 import { testimonials } from "@/data/testimonials";
 import { useEffect, useState, useRef } from "react";
@@ -26,6 +25,7 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   const properties = Route.useLoaderData();
   const featured = properties.slice(0, 6);
+  const dynamicSuburbs = [...new Set(properties.map((p) => p.suburb))].sort();
   const [loaded, setLoaded] = useState(false);
   const [enquiryProp, setEnquiryProp] = useState<Property | null>(null);
 
@@ -109,7 +109,7 @@ function HomePage() {
                 </p>
               </div>
 
-              <HeroSearch />
+              <HeroSearch properties={properties} dynamicSuburbs={dynamicSuburbs} />
 
               <div className="mt-8 pt-8 border-t border-border/60">
                 <div className="bg-primary/5 hover:bg-primary/10 transition-colors duration-300 border border-primary/10 rounded-xl p-5 flex flex-col sm:flex-row items-center gap-4 group">
@@ -221,7 +221,7 @@ function HomePage() {
 
 // ─── HERO SEARCH WITH AUTOCOMPLETE ──────────────────────────────────────────
 
-function HeroSearch() {
+function HeroSearch({ properties, dynamicSuburbs }: { properties: Property[], dynamicSuburbs: string[] }) {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -231,7 +231,7 @@ function HeroSearch() {
   const handleChange = (val: string) => {
     setQuery(val);
     if (val.length >= 1) {
-      const matches = SUBURBS.filter((s) => s.toLowerCase().startsWith(val.toLowerCase()));
+      const matches = dynamicSuburbs.filter((s) => s.toLowerCase().startsWith(val.toLowerCase()));
       setSuggestions(matches);
       setShowSugg(matches.length > 0);
     } else {
@@ -295,7 +295,7 @@ function HeroSearch() {
       )}
 
       <p className="mt-3 text-center text-xs text-muted-foreground">
-        {SUBURBS.length} suburbs ·{" "}
+        {dynamicSuburbs.length} suburbs ·{" "}
         <Link to="/property" className="text-primary font-semibold hover:text-gold">
           View all listings
         </Link>
