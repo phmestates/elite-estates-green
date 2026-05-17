@@ -102,7 +102,8 @@ export const propertyType = defineType({
       title: 'Status',
       type: 'string',
       options: {
-        list: ['For Sale', 'Under Contract', 'Sold'],
+        list: ['For Sale', 'For Rent', 'Under Contract', 'Sold', 'Leased'],
+        layout: 'radio',
       },
       initialValue: 'For Sale',
     }),

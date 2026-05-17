@@ -1,0 +1,16 @@
+# PHM Elite Estates — robots.txt
+# https://www.phmestates.com
+
+User-agent: *
+Allow: /
+
+# Disallow admin/studio paths
+Disallow: /studio/
+Disallow: /admin/
+Disallow: /api/
+
+# Crawl-delay for polite bots
+Crawl-delay: 10
+
+# Sitemap location
+Sitemap: https://www.phmestates.com/sitemap.xml

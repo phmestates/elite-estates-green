@@ -1,0 +1,14 @@
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/shop"
+  to = "/store"
+  status = 200
+
+[[redirects]]
+  from = "/blog/*"
+  to = "https://my-other-blog.com"
+  status = 200

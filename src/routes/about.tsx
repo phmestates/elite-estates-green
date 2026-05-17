@@ -148,11 +148,11 @@ function AboutPage() {
                   </span>
                   <span className="text-sm tracking-[0.1em] text-foreground/80 font-medium">{site.phone2}</span>
                 </a>
-                <a href="mailto:director@phmestates.com" className="flex items-center gap-5 hover:text-primary-dark transition-colors group">
+                <a href="mailto:admin@phmestates.com" className="flex items-center gap-5 hover:text-primary-dark transition-colors group">
                   <span className="w-10 h-10 rounded-full border border-gold/30 grid place-items-center group-hover:bg-gold transition-colors">
                     <Mail size={16} className="text-gold group-hover:text-primary-dark transition-colors" />
                   </span>
-                  <span className="text-sm tracking-[0.1em] text-foreground/80 font-medium">director@phmestates.com</span>
+                  <span className="text-sm tracking-[0.1em] text-foreground/80 font-medium">admin@phmestates.com</span>
                 </a>
               </div>
             </div>
@@ -209,8 +209,15 @@ function AboutPage() {
             </motion.p>
           </div>
 
-          {/* Team Grid */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Team Grid — adapts gracefully to any number of agents */}
+          <div className={`grid gap-8 justify-items-center ${agents.length === 1
+            ? "grid-cols-1 max-w-sm mx-auto"
+            : agents.length === 2
+              ? "grid-cols-1 sm:grid-cols-2 max-w-2xl mx-auto"
+              : agents.length === 3
+                ? "grid-cols-1 sm:grid-cols-3"
+                : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+            }`}>
             {agents.map((agent, i) => (
               <motion.div
                 key={agent.name}
@@ -223,11 +230,11 @@ function AboutPage() {
               >
                 {/* Portrait */}
                 <div className="relative overflow-hidden rounded-xl aspect-[3/4] mb-5 shadow-lg">
-                  <div className="absolute inset-0 bg-primary-dark/30 group-hover:bg-primary-dark/10 transition-colors duration-700 z-10" />
+                  {/* <div className="absolute inset-0 bg-primary-dark/30 group-hover:bg-primary-dark/10 transition-colors duration-700 z-10" /> */}
                   <img
                     src={agent.image}
                     alt={agent.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    className="w-full h-full object-cover  group-hover:scale-105 transition-transform duration-700"
                   />
                   {/* Gold accent bottom bar */}
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gold via-gold-shine to-gold opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20" />
